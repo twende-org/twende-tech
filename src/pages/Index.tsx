@@ -14,7 +14,7 @@ const Index = () => {
       <main>
         <section id="home">
           <Hero />
-        </section>
+        </section> 
         
         <section id="about">
           <About />

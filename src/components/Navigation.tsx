@@ -30,7 +30,7 @@ const Navigation = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center space-x-2">
-            <Code2 className="w-8 h-8 text-primary" />
+           
             <span className="text-xl font-black">
               <span className="gradient-text">Twende</span> Digital
             </span>

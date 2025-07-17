@@ -4,10 +4,12 @@ import { useNavigate } from "react-router-dom";
 
 
 const Hero = () => {
-  const navigate = useNavigate();
-
-  const goToContact = () => {
-    navigate("/#contact");
+  const scrollToContact = () => {
+     //Ina navigate kupitia ID ya section ya contact
+    const contactSection = document.getElementById("contact");
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   const goToPortfolio = () => {

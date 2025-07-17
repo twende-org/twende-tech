@@ -9,6 +9,7 @@ const Hero = () => {
     }
   };
 
+  //Ina navigate kupitia ID ya section ya portfolio
   const scrollToPortfolio = () => {
     const portfolioSection = document.getElementById("portfolio");
     if (portfolioSection) {

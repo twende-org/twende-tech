@@ -1,20 +1,21 @@
 import { ArrowRight, Code2, Smartphone, Palette, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+
 
 const Hero = () => {
-  const scrollToContact = () => {
-    const contactSection = document.getElementById("contact");
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: "smooth" });
-    }
+  const navigate = useNavigate();
+
+  const goToContact = () => {
+    navigate("/#contact");
   };
 
-  const scrollToPortfolio = () => {
-    const portfolioSection = document.getElementById("portfolio");
-    if (portfolioSection) {
-      portfolioSection.scrollIntoView({ behavior: "smooth" });
-    }
+  const goToPortfolio = () => {
+    navigate("/#portfolio");
   };
+
+
+
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4">
@@ -45,13 +46,14 @@ const Hero = () => {
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-          <Button variant="hero" size="xl" className="group" onClick={scrollToContact}>
+          <Button variant="hero" size="xl" className="group" onClick={goToContact}>
             Start Your Project
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Button>
-          <Button variant="glass" size="xl" onClick={scrollToPortfolio}>
+          <Button variant="glass" size="xl" onClick={goToPortfolio}>
             View Our Work
           </Button>
+
         </div>
 
         {/* Tech Stack Preview */}

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 
 const Hero = () => {
   const scrollToContact = () => {
+     //Ina navigate kupitia ID ya section ya contact
     const contactSection = document.getElementById("contact");
     if (contactSection) {
       contactSection.scrollIntoView({ behavior: "smooth" });

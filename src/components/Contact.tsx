@@ -3,10 +3,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import Map from "@/components/Map";
+import Navigation from "./Navigation";
+import Footer from "./Footer";
+
 
 const Contact = () => {
   return (
-    <section className="py-24 px-4 relative">
+    <div>
+     <Navigation/>
+     
+     <section className="py-24 px-4 relative">
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16">
@@ -164,6 +170,10 @@ const Contact = () => {
         </div>
       </div>
     </section>
+      
+      <Footer/>
+    </div>
+    
   );
 };
 

@@ -2,6 +2,8 @@ import { Users, MapPin, Target, Heart } from "lucide-react";
 import alexMwenda from "@/assets/alex-mwenda.webp";
 import graceKileo from "@/assets/grace-kileo.webp";
 import johnMassawe from "@/assets/john-massawe.webp";
+import Navigation from "./Navigation";
+import Footer from "./Footer";
 
 const About = () => {
   const founders = [
@@ -29,6 +31,9 @@ const About = () => {
   ];
 
   return (
+    <div>
+      <Navigation/>
+
     <section className="py-24 px-4 relative">
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
@@ -117,6 +122,9 @@ const About = () => {
         </div>
       </div>
     </section>
+
+      <Footer/>
+    </div>
   );
 };
 

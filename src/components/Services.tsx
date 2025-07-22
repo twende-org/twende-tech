@@ -1,5 +1,7 @@
 import { Code, Smartphone, Palette, Settings, Shield, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Navigation from "./Navigation";
+import Footer from "./Footer";
 
 const Services = () => {
   const services = [
@@ -48,6 +50,9 @@ const Services = () => {
   ];
 
   return (
+    <div>
+      <Navigation />
+
     <section className="py-24 px-4 relative">
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
@@ -118,6 +123,10 @@ const Services = () => {
       <div className="absolute top-20 right-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl animate-pulse-glow"></div>
       <div className="absolute bottom-20 left-10 w-64 h-64 bg-accent/5 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '2s' }}></div>
     </section>
+
+    <Footer />
+
+    </div>
   );
 };
 

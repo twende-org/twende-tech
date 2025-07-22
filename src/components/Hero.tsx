@@ -1,21 +1,16 @@
 import { ArrowRight, Code2, Smartphone, Palette, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
-  const scrollToContact = () => {
-     //Ina navigate kupitia ID ya section ya contact
-    const contactSection = document.getElementById("contact");
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: "smooth" });
-    }
+  const navigate = useNavigate();
+
+  const goToContact = () => {
+    navigate("/contact");
   };
 
-  //Ina navigate kupitia ID ya section ya portfolio
-  const scrollToPortfolio = () => {
-    const portfolioSection = document.getElementById("portfolio");
-    if (portfolioSection) {
-      portfolioSection.scrollIntoView({ behavior: "smooth" });
-    }
+  const goToPortfolio = () => {
+    navigate("/portfolio");
   };
 
   return (
@@ -47,11 +42,11 @@ const Hero = () => {
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-          <Button variant="hero" size="xl" className="group" onClick={scrollToContact}>
+          <Button variant="hero" size="xl" className="group" onClick={goToContact}>
             Start Your Project
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Button>
-          <Button variant="glass" size="xl" onClick={scrollToPortfolio}>
+          <Button variant="glass" size="xl" onClick={goToPortfolio}>
             View Our Work
           </Button>
         </div>
@@ -63,7 +58,7 @@ const Hero = () => {
             { name: "Mobile Apps", icon: Smartphone },
             { name: "UI/UX Design", icon: Palette },
             { name: "Fast & Scalable", icon: Zap }
-          ].map((tech, index) => (
+          ].map((tech) => (
             <div key={tech.name} className="glass-card p-6 rounded-xl hover-lift group">
               <tech.icon className="w-8 h-8 text-primary mb-3 mx-auto group-hover:text-primary-glow transition-colors" />
               <p className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">

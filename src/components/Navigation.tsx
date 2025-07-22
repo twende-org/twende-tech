@@ -36,11 +36,11 @@ const Navigation = () => {
     >
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
+          {/* Logo - Clickable to Home */}
           <Link
             to="/"
             className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
-            onClick={() => setIsOpen(false)} // Also close mobile menu if clicked
+            onClick={() => setIsOpen(false)}
           >
             <span className="text-xl font-black">
               <span className="gradient-text">Twende</span> Digital
@@ -59,11 +59,13 @@ const Navigation = () => {
               </Link>
             ))}
             <Link to="/contact">
-              <Button variant="hero" size="sm">Get Started</Button>
+              <Button variant="hero" size="sm">
+                Get Started
+              </Button>
             </Link>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Toggle */}
           <div className="md:hidden">
             <Button
               variant="ghost"

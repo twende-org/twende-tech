@@ -69,7 +69,7 @@ const Portfolio = () => {
 
   return (
     <div>
-      <Navigation />
+  
 
     <section className="py-24 px-4 relative">
       <div className="max-w-6xl mx-auto">
@@ -165,7 +165,7 @@ const Portfolio = () => {
       <div className="absolute bottom-40 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '3s' }}></div>
     </section>
 
-    <Footer />
+    
 
 
     </div>

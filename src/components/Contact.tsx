@@ -2,14 +2,10 @@ import { Mail, Phone, MessageCircle, MapPin, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import Navigation from "./Navigation";
-import Footer from "./Footer";
-
 const Contact = () => {
   return (
     <div>
-      <Navigation />
-
+     
       <section className="py-24 px-4 relative">
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
@@ -178,7 +174,7 @@ const Contact = () => {
         </div>
       </section>
 
-      <Footer />
+     
     </div>
   );
 };

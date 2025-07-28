@@ -32,7 +32,7 @@ const About = () => {
 
   return (
     <div>
-      <Navigation/>
+   
 
     <section className="py-24 px-4 relative">
       <div className="max-w-6xl mx-auto">
@@ -123,7 +123,7 @@ const About = () => {
       </div>
     </section>
 
-      <Footer/>
+     
     </div>
   );
 };

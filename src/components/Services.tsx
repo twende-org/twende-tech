@@ -72,7 +72,7 @@ const Services = () => {
       </div>
 
       {/* Services Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto mb-24 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto mb-24">
         {services.map((service) => (
           <div key={service.title} className="glass-card p-8 rounded-xl hover-lift group relative overflow-hidden">
             <div className={`absolute -top-10 -right-10 w-20 h-20 ${service.color} opacity-10 rounded-full blur-xl group-hover:opacity-20 transition-opacity`}></div>
@@ -97,7 +97,7 @@ const Services = () => {
       </div>
 
       {/* CTA Section */}
-      <div className="glass-card p-12 rounded-xl text-center max-w-4xl mx-auto animate-slide-up" style={{ animationDelay: '0.4s' }}>
+      <div className="glass-card p-12 rounded-xl text-center max-w-4xl mx-auto">
         <h3 className="text-3xl font-bold mb-4">Ready to Start Your Project?</h3>
         <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
           Let’s discuss how we can help transform your ideas into powerful, scalable software solutions that drive real business results.

@@ -37,7 +37,7 @@ const About = () => {
     <section className="py-24 px-4 relative">
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-16 animate-slide-up">
           <h2 className="text-5xl md:text-6xl font-black mb-6">
             About <span className="gradient-text">Twende</span>
           </h2>

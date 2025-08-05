@@ -70,10 +70,10 @@ const Portfolio = () => {
     <div>
   
 
-    <section className="py-24 px-4 relative">
+    <section className="py-24 px-4 relative overflow-hidden">
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-16 animate-slide-up">
           <h2 className="text-5xl md:text-6xl font-black mb-6">
             Our <span className="gradient-text">Portfolio</span>
           </h2>

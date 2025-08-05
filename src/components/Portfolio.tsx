@@ -6,8 +6,7 @@ import financeflowDashboard from "@/assets/portfolio/financeflow-dashboard.webp"
 import educonnectPlatform from "@/assets/portfolio/educonnect-platform.webp";
 import restaurantproSystem from "@/assets/portfolio/restaurantpro-system.webp";
 import travelguideApp from "@/assets/portfolio/travelguide-app.webp";
-import Navigation from "./Navigation";
-import Footer from "./Footer";
+
 
 const Portfolio = () => {
   const projects = [

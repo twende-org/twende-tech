@@ -6,7 +6,7 @@ import Contact from "@/components/Contact";
 
 const Index = () => {
   return (
-    <main>
+    <main className="w-full">
       <section id="home">
         <Hero />
       </section> 

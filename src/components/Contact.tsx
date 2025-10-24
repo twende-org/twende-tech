@@ -4,8 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 const Contact = () => {
   return (
-    <div>
-     
+    <div className="w-full">
+
       <section className="py-24 px-4 relative">
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
@@ -161,20 +161,27 @@ const Contact = () => {
           </div>
 
           {/* Social Proof */}
-          <div className="mt-16 text-center">
-            <p className="text-muted-foreground mb-8">Trusted by forward-thinking companies worldwide</p>
-            <div className="flex justify-center items-center space-x-8 opacity-50">
+          {/* Social Proof */}
+          <div className="mt-16 text-center max-w-5xl mx-auto">
+            <p className="text-muted-foreground mb-8">
+              Trusted by forward-thinking companies worldwide
+            </p>
+            <div className="flex flex-wrap justify-center items-center gap-6 opacity-50">
               {["TechCorp", "InnovateNow", "FutureApps", "DigitalPro"].map((company, index) => (
-                <div key={index} className="text-lg font-bold text-muted-foreground">
+                <div
+                  key={index}
+                  className="text-lg font-bold text-muted-foreground whitespace-nowrap"
+                >
                   {company}
                 </div>
               ))}
             </div>
           </div>
+
         </div>
       </section>
 
-     
+
     </div>
   );
 };

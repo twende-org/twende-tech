@@ -28,7 +28,7 @@ const Hero = () => {
       <div className="max-w-6xl mx-auto text-center relative z-10">
         {/* Main Heading */}
         <div className="animate-slide-up">
-          <h1 className="text-6xl md:text-8xl font-black mb-6 leading-tight">
+          <h1 className="text-6xl pt-14 md:text-8xl font-black mb-6 leading-tight">
             <span className="gradient-text">Twende</span>
             <br />
             <span className="text-foreground">Digital</span>

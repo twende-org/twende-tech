@@ -1,32 +1,32 @@
 import { Users, MapPin, Target, Heart } from "lucide-react";
-import alexMwenda from "@/assets/alex-mwenda.webp";
-import graceKileo from "@/assets/grace-kileo.webp";
-import johnMassawe from "@/assets/john-massawe.webp";
+import kululinda from "@/assets/alex-mwenda.webp";
+import joshua from "@/assets/grace-kileo.webp";
+import norman from "@/assets/john-massawe.webp";
 import Navigation from "./Navigation";
 import Footer from "./Footer";
 
 const About = () => {
   const founders = [
     {
-      name: "Alex Mwenda",
+      name: "Kululinda Mlekwa",
       role: "Full-Stack Developer & Co-Founder",
       expertise: "React, Node.js, Cloud Architecture",
       description: "Passionate about creating scalable web applications and leading technical innovation.",
-      image: alexMwenda
+      image: kululinda
     },
     {
-      name: "Grace Kileo",
+      name: "Joshua Massawe",
       role: "UI/UX Designer & Co-Founder", 
       expertise: "Design Systems, User Research, Figma",
       description: "Crafting beautiful and intuitive user experiences that drive business results.",
-      image: graceKileo
+      image: norman
     },
     {
-      name: "John Massawe",
+      name: "Norman Mushi",
       role: "Mobile Developer & Co-Founder",
       expertise: "React Native, Flutter, iOS/Android",
       description: "Building high-performance mobile applications that users love to interact with.",
-      image: johnMassawe
+      image: kululinda
     }
   ];
 

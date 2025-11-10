@@ -28,11 +28,11 @@ const Contact = () => {
     const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
     const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
     const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
-    console.log("FormData",formData)
+    // console.log("FormData",formData)
     emailjs
       .send(
-        serviceId,       // e.g. service_gmail123
-        templateId,      // e.g. template_contact
+        serviceId,       
+        templateId,      
         formData,
         publicKey
       )

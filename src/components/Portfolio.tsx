@@ -1,10 +1,10 @@
 import { ExternalLink, Github, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ecotradePlatform from "@/assets/portfolio/twendedocs.png";
-import healthtrackMobile from "@/assets/portfolio/tuleteApp.webp";
-import financeflowDashboard from "@/assets/portfolio/tuleteweb.png";
-// import educonnectPlatform from "@/assets/portfolio/twendeAdmin.png";
-import restaurantproSystem from "@/assets/portfolio/twendedigital.png";
+import twendedocs from "@/assets/portfolio/twendedocs.png";
+import tuleteApp from "@/assets/portfolio/tuleteApp.webp";
+import tuleteweb from "@/assets/portfolio/tuleteweb.png";
+import twendeAdmin from "@/assets/portfolio/twendeAdmin.png";
+import twendedigital from "@/assets/portfolio/twendedigital.png";
 import travelguideApp from "@/assets/portfolio/travelguide-app.webp";
 
 
@@ -13,8 +13,8 @@ const Portfolio = () => {
     {
       title: "Twende Docs",
       description: "Professional document creation platform designed to save you time and help you present yourself effectively",
-      image: ecotradePlatform,
-      tech: ["React Typescript", "Node.js", "Stripe", "PostgreSQL"],
+      image: twendedocs,
+      tech: ["React Typescript", "Django", "Azam Pesa", "PostgreSQL"],
       category: "E-Document",
       liveUrl: "https://docs.twendedigital.tech/",
       githubUrl: "https://github.com/FineDR/document_project"
@@ -22,29 +22,38 @@ const Portfolio = () => {
     {
       title: "Tulete App",
       description: "Tulete is your one-stop app for anything you need. Order food, shop for anything, anytime, anywhere, and enjoy convenient laundry services.",
-      image: healthtrackMobile,
-      tech: ["flutter", "Firebase", "Chart.js", "Push Notifications"],
+      image: tuleteApp,
+      tech: ["Flutter", "Firebase", "Google Maps", "Push Notifications"],
       category: "Mobile App",
-      liveUrl: "#",
-      githubUrl: "#"
+      liveUrl: "https://tulete.page.link/3Ds",
+      githubUrl: "https://github.com/mushi2/Tulete-Client-New/tree/master"
     },
     {
       title: "Tulete Web",
       description: "Tulete connects you to the best vetted restaurants, vetted convenient shopping stores, and laundry services all through one powerful mobile app. Experience convenience like never before in Dodoma, Tanzania.",
-      image: financeflowDashboard,
-      tech: ["react typescript", "Tailwind CSS"],
+      image: tuleteweb,
+      tech: ["React Typescript", "Tailwind CSS"],
       category: "Web App",
       liveUrl: "https://tulete.onrender.com",
-      githubUrl: "#"
+      githubUrl: "https://github.com/MushiVerse/tulete-dodoma-web"
     },
   
     {
       title: "Twende Digital Website",
       description: "Professional software development by skilled Tanzanian developers. We create exceptional web applications, mobile solutions, and custom software for international clients.",
-      image: restaurantproSystem,
-      tech: ["react typescript", "tailwind css"],
+      image: twendedigital,
+      tech: ["React Typescript", "Tailwind CSS"],
       category: "Website",
       liveUrl: "https://twendedigital.tech/",
+      githubUrl: "https://github.com/twende-org/twende-tech/"
+    },
+    {
+      title: "Twende Admin",
+      description: "The Twende Digital Website Portal",
+      image: twendeAdmin,
+      tech: ["React Typescript", "Express JS", "Tailwind CSS"],
+      category: "Web System",
+      liveUrl: "https://twendedigital.tech/admin",
       githubUrl: "https://github.com/twende-org/twende-tech/"
     },
    

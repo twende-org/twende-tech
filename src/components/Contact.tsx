@@ -1,8 +1,58 @@
 import { Mail, Phone, MessageCircle, MapPin, Send } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import emailjs from "emailjs-com";
+
+const EnvVar = import.meta.env;
+
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    company: "",
+    projectType: "",
+    message: "",
+  });
+
+  const [status, setStatus] = useState("");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus("Sending...");
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+    console.log("FormData",formData)
+    emailjs
+      .send(
+        serviceId,       // e.g. service_gmail123
+        templateId,      // e.g. template_contact
+        formData,
+        publicKey
+      )
+      .then(
+        () => {
+          setStatus("Message sent successfully ✅");
+          setFormData({
+            name: "",
+            email: "",
+            company: "",
+            projectType: "",
+            message: "",
+          });
+        },
+        (error) => {
+          console.error("FAILED...", error.text);
+          setStatus("Failed to send ❌");
+        }
+      );
+  };
   return (
     <div className="w-full">
 
@@ -24,26 +74,32 @@ const Contact = () => {
             <div className="glass-card p-8 rounded-xl">
               <h3 className="text-2xl font-bold mb-6">Start Your Project</h3>
 
-              <form className="space-y-6">
+              <form className="space-y-6" onSubmit={handleSubmit}>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm font-medium mb-2 block">Full Name</label>
-                    <Input placeholder="Your full name" className="bg-muted/20 border-muted" />
+                    <Input placeholder="Your full name" name="name" value={formData.name} onChange={handleChange} className="bg-muted/20 border-muted" />
                   </div>
                   <div>
                     <label className="text-sm font-medium mb-2 block">Email</label>
-                    <Input type="email" placeholder="your.email@company.com" className="bg-muted/20 border-muted" />
+                    <Input type="email" placeholder="your.email@company.com" name="email" value={formData.email} onChange={handleChange} className="bg-muted/20 border-muted" />
                   </div>
                 </div>
 
                 <div>
                   <label className="text-sm font-medium mb-2 block">Company</label>
-                  <Input placeholder="Your company name" className="bg-muted/20 border-muted" />
+                  <Input placeholder="Your company name" name="company" value={formData.company} onChange={handleChange} className="bg-muted/20 border-muted" />
                 </div>
 
                 <div>
                   <label className="text-sm font-medium mb-2 block">Project Type</label>
-                  <select className="w-full p-3 rounded-lg bg-muted/20 border border-muted text-foreground">
+                  <select
+                    name="projectType"
+                    value={formData.projectType}
+                    onChange={handleChange}
+                    className="w-full p-3 rounded-lg bg-muted/20 border border-muted text-foreground"
+                  >
+                    <option value="">Select Project Type</option>
                     <option>Web Application</option>
                     <option>Mobile App</option>
                     <option>UI/UX Design</option>
@@ -56,6 +112,9 @@ const Contact = () => {
                 <div>
                   <label className="text-sm font-medium mb-2 block">Project Details</label>
                   <Textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
                     placeholder="Tell us about your project, goals, timeline, and any specific requirements..."
                     rows={5}
                     className="bg-muted/20 border-muted resize-none"
@@ -67,6 +126,7 @@ const Contact = () => {
                   <Send className="w-5 h-5 ml-2" />
                 </Button>
               </form>
+              {status && <p className="text-center mt-4 text-sm">{status}</p>}
             </div>
 
             {/* Contact Information */}
@@ -82,7 +142,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <p className="font-medium">Email</p>
-                      <p className="text-muted-foreground">hello@twendedigital.com</p>
+                      <p className="text-muted-foreground">info.twendedigital@gmail.com</p>
                     </div>
                   </div>
 

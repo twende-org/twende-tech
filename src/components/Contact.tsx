@@ -92,7 +92,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <p className="font-medium">Phone</p>
-                      <p className="text-muted-foreground">+255 123 456 789</p>
+                      <p className="text-muted-foreground">+255 692 671 206</p>
                     </div>
                   </div>
 
@@ -102,7 +102,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <p className="font-medium">WhatsApp</p>
-                      <p className="text-muted-foreground">+255 987 654 321</p>
+                      <p className="text-muted-foreground">+255 692 671 206</p>
                     </div>
                   </div>
 
@@ -160,7 +160,6 @@ const Contact = () => {
             </div>
           </div>
 
-          {/* Social Proof */}
           {/* Social Proof */}
           <div className="mt-16 text-center max-w-5xl mx-auto">
             <p className="text-muted-foreground mb-8">

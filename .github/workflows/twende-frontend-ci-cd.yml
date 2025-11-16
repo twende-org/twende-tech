@@ -20,11 +20,9 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        working-directory: ./twende-tech
         run: npm ci
 
       - name: Build frontend
-        working-directory: ./twende-tech
         run: npm run build
 
       - name: Log in to Docker Hub
@@ -34,7 +32,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker image
-        run: docker build -t multi-frontend-twende_tech ./twende-tech
+        run: docker build -t multi-frontend-twende_tech .
 
       - name: Push Docker image
         run: |

@@ -16,7 +16,7 @@ const Portfolio = () => {
       image: twendedocs,
       tech: ["React Typescript", "Django", "Azam Pesa", "PostgreSQL"],
       category: "E-Document",
-      liveUrl: "https://docs.twendedigital.tech/",
+      liveUrl: "https://docs.twendedigital.tech",
       githubUrl: "https://github.com/FineDR/document_project"
     },
     {
@@ -44,7 +44,7 @@ const Portfolio = () => {
       image: twendedigital,
       tech: ["React Typescript", "Tailwind CSS"],
       category: "Website",
-      liveUrl: "https://twendedigital.tech/",
+      liveUrl: "https://twendedigital.tech",
       githubUrl: "https://github.com/twende-org/twende-tech/"
     },
     {

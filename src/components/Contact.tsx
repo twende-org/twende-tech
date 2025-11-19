@@ -97,7 +97,7 @@ const Contact = () => {
                     name="projectType"
                     value={formData.projectType}
                     onChange={handleChange}
-                    className="w-full p-3 rounded-lg bg-muted/20 border border-muted text-foreground"
+                    className="w-full p-3 rounded-lg bg-muted border border-muted text-foreground"
                   >
                     <option value="">Select Project Type</option>
                     <option>Web Application</option>

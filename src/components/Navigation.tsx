@@ -10,9 +10,10 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { name: "Home", to: "/" },
-  { name: "About", to: "/about" },
+  { name: "About Us", to: "/about" },
   { name: "Services", to: "/services" },
-  { name: "Portfolio", to: "/portfolio" },
+  { name: "Pricing", to: "/pricing" },
+  { name: "Our Work", to: "/portfolio" },
   { name: "Contact", to: "/contact" },
 ];
 

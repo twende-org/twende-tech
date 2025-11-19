@@ -33,11 +33,11 @@ const Hero = () => {
             <br />
             <span className="text-foreground">Digital</span>
           </h1>
-          
+
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-8 leading-relaxed">
-            Professional software development by skilled Tanzanian developers. 
-            We create exceptional web applications, mobile solutions, and custom software for international clients.
+            Twende Digital delivers professional software and tech solutions. We build web apps, mobile apps, and custom software for businesses and organizations.
           </p>
+
         </div>
 
         {/* CTA Buttons */}

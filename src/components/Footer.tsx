@@ -34,9 +34,9 @@ const Footer = () => {
           <div>
             <h4 className="font-bold mb-4">Quick Links</h4>
             <ul className="space-y-2">
-              {['Home', 'About', 'Services', 'Portfolio', 'Contact'].map((link) => (
+              {['Home', 'About', 'Services', 'Our works','Pricing', 'Contact'].map((link) => (
                 <li key={link}>
-                  <a href={`#${link.toLowerCase()}`} className="text-muted-foreground hover:text-primary transition-colors">
+                  <a href={`${link.toLowerCase()}`} className="text-muted-foreground hover:text-primary transition-colors">
                     {link}
                   </a>
                 </li>
@@ -50,7 +50,7 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-center">
                 <Mail className="w-4 h-4 text-primary mr-3" />
-                <span className="text-muted-foreground text-sm">twendedigital@gmail.com</span>
+                <span className="text-muted-foreground text-sm">info.twendedigital@gmail.com</span>
               </div>
               <div className="flex items-center">
                 <Phone className="w-4 h-4 text-primary mr-3" />

@@ -48,4 +48,4 @@ jobs:
           script: |
             cd ~/multi-frontend
             docker-compose pull twende_tech
-            docker-compose up -d twende_tech --force-recreate twende_tech
+            docker-compose up -d --force-recreate twende_tech

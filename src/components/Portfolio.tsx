@@ -5,10 +5,12 @@ import tuleteApp from "@/assets/portfolio/tuleteApp.webp";
 import tuleteweb from "@/assets/portfolio/tuleteweb.png";
 import twendeAdmin from "@/assets/portfolio/twendeAdmin.png";
 import twendedigital from "@/assets/portfolio/twendedigital.png";
-import travelguideApp from "@/assets/portfolio/travelguide-app.webp";
+// import travelguideApp from "@/assets/portfolio/travelguide-app.webp";
+import { useNavigate } from "react-router-dom";
 
 
 const Portfolio = () => {
+  const navigate = useNavigate();
   const projects = [
     {
       title: "Twende Docs",
@@ -37,7 +39,7 @@ const Portfolio = () => {
       liveUrl: "https://tulete.onrender.com",
       githubUrl: "https://github.com/MushiVerse/tulete-dodoma-web"
     },
-  
+
     {
       title: "Twende Digital Website",
       description: "Professional software development by skilled Tanzanian developers. We create exceptional web applications, mobile solutions, and custom software for international clients.",
@@ -56,7 +58,7 @@ const Portfolio = () => {
       liveUrl: "https://twendedigital.tech/admin",
       githubUrl: "https://github.com/twende-org/twende-tech/"
     },
-   
+
   ];
 
   return (
@@ -68,7 +70,7 @@ const Portfolio = () => {
           {/* Section Header */}
           <div className="text-center mb-16 animate-slide-up">
             <h2 className="text-5xl md:text-6xl font-black mb-6">
-              Our <span className="gradient-text">Portfolio</span>
+              Our <span className="gradient-text">Works</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               Showcasing our expertise through successful projects that have helped businesses
@@ -149,18 +151,14 @@ const Portfolio = () => {
           </div>
 
           {/* Portfolio CTA */}
-          <div className="text-center">
-            <div className="glass-card p-8 rounded-xl inline-block">
-              <h3 className="text-2xl font-bold mb-4">Want to See More?</h3>
-              <p className="text-muted-foreground mb-6 max-w-lg">
-                Explore our complete portfolio with detailed case studies, client testimonials,
-                and technical deep-dives.
-              </p>
-              <Button variant="hero" size="lg">
-                View Full Portfolio
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-            </div>
+          <div className="glass-card p-12 rounded-xl text-center max-w-4xl mx-auto animate-slide-up">
+            <h3 className="text-3xl font-bold mb-4">Need Custom Solutions?</h3>
+            <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
+              Contact Twende Digital today to discuss your requirements, get a tailored quote, or start yours.
+            </p>
+            <Button variant="hero" size="lg" className="group" onClick={() => navigate("/contact")}>
+              Get Free Consultation
+            </Button>
           </div>
         </div>
 

@@ -3,13 +3,14 @@ import About from "@/components/About";
 import Services from "@/components/Services";
 import Portfolio from "@/components/Portfolio";
 import Contact from "@/components/Contact";
+import Pricing from "@/components/Pricing";
 
 const Index = () => {
   return (
     <main className="w-full">
       <section id="home">
         <Hero />
-      </section> 
+      </section>
 
       <section id="about">
         <About />
@@ -22,10 +23,13 @@ const Index = () => {
       <section id="portfolio">
         <Portfolio />
       </section>
-
+      <section id="contact">
+        <Pricing />
+      </section>
       <section id="contact">
         <Contact />
       </section>
+
     </main>
   );
 };

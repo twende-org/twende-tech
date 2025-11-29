@@ -35,8 +35,9 @@ const Hero = () => {
           </h1>
 
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-8 leading-relaxed">
-            Twende Digital delivers professional software and tech solutions. We build web apps, mobile apps, and custom software for businesses and organizations.
+            Your business deserves a reliable tech team. Get a full Software Team from 150,000 TZS/month — updates, security, hosting & support included. DM for a quote.
           </p>
+
 
         </div>
 

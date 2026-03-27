@@ -18,25 +18,26 @@ import {
 import { useState } from "react";
 
 interface AdminSidebarProps {
-  activeSection: string;
-  onSectionChange: (section: string) => void;
+  activeTab: string;
+  onTabChange: (tab: string) => void;
   onLogout: () => void;
 }
 
-export function AdminSidebar({ activeSection, onSectionChange, onLogout }: AdminSidebarProps) {
+export function AdminSidebar({ activeTab, onTabChange, onLogout }: AdminSidebarProps) {
   const [isNavigationOpen, setIsNavigationOpen] = useState(false);
 
   const mainMenuItems = [
-    { id: "overview", label: "Overview", icon: LayoutDashboard },
+    { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
     { id: "messages", label: "Messages", icon: MessageSquare },
     { id: "analytics", label: "Analytics", icon: BarChart3 },
     { id: "settings", label: "Settings", icon: Settings },
   ];
 
   const navigationItems = [
+    { id: "projects", label: "Projects" },
+    { id: "testimonials", label: "Testimonials" },
     { id: "about", label: "About" },
     { id: "services", label: "Services" },
-    { id: "projects", label: "Projects" },
     { id: "contact", label: "Contact" },
   ];
 
@@ -52,14 +53,14 @@ export function AdminSidebar({ activeSection, onSectionChange, onLogout }: Admin
       <nav className="space-y-2">
         {/* Overview */}
         <Button
-          variant={activeSection === "overview" ? "secondary" : "ghost"}
+          variant={activeTab === "dashboard" ? "secondary" : "ghost"}
           className={`w-full justify-start gap-3 ${
-            activeSection === "overview" ? "bg-primary/10 text-primary border border-primary/20" : ""
+            activeTab === "dashboard" ? "bg-primary/10 text-primary border border-primary/20" : ""
           }`}
-          onClick={() => onSectionChange("overview")}
+          onClick={() => onTabChange("dashboard")}
         >
           <LayoutDashboard className="h-4 w-4" />
-          Overview
+          Dashboard
         </Button>
 
         {/* Navigation Dropdown */}
@@ -70,13 +71,13 @@ export function AdminSidebar({ activeSection, onSectionChange, onLogout }: Admin
               className="w-full justify-start gap-3 hover:bg-muted/50"
             >
               <Navigation className="h-4 w-4" />
-              Navigation
+              Content Management
             </Button>
           </CollapsibleTrigger>
           <CollapsibleContent className="space-y-1 mt-1">
             <div className="ml-6 space-y-1">
               {navigationItems.map((item) => {
-                const isActive = activeSection === item.id;
+                const isActive = activeTab === item.id;
                 return (
                   <Button
                     key={item.id}
@@ -85,7 +86,7 @@ export function AdminSidebar({ activeSection, onSectionChange, onLogout }: Admin
                     className={`w-full justify-start ${
                       isActive ? "bg-primary/10 text-primary border border-primary/20" : ""
                     }`}
-                    onClick={() => onSectionChange(item.id)}
+                    onClick={() => onTabChange(item.id)}
                   >
                     {item.label}
                   </Button>
@@ -98,7 +99,7 @@ export function AdminSidebar({ activeSection, onSectionChange, onLogout }: Admin
         {/* Other Menu Items */}
         {mainMenuItems.slice(1).map((item) => {
           const Icon = item.icon;
-          const isActive = activeSection === item.id;
+          const isActive = activeTab === item.id;
           
           return (
             <Button
@@ -107,7 +108,7 @@ export function AdminSidebar({ activeSection, onSectionChange, onLogout }: Admin
               className={`w-full justify-start gap-3 ${
                 isActive ? "bg-primary/10 text-primary border border-primary/20" : ""
               }`}
-              onClick={() => onSectionChange(item.id)}
+              onClick={() => onTabChange(item.id)}
             >
               <Icon className="h-4 w-4" />
               {item.label}

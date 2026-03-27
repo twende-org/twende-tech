@@ -30,11 +30,11 @@ interface AdminDashboardProps {
 }
 
 export function AdminDashboard({ onLogout }: AdminDashboardProps) {
-  const [activeSection, setActiveSection] = useState("overview");
+  const [activeTab, setActiveTab] = useState("dashboard");
 
   const renderContent = () => {
-    switch (activeSection) {
-      case "overview":
+    switch (activeTab) {
+      case "dashboard":
         return <DashboardOverview />;
       case "projects":
         return <ProjectsManager />;
@@ -42,8 +42,6 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
         return <TestimonialsManager />;
       case "messages":
         return <ContactMessages />;
-      case "hero":
-        return <Hero />;
       case "about":
         return <About />;
       case "services":
@@ -52,6 +50,12 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
         return <Portfolio />;
       case "contact":
         return <Contact />;
+      case "settings":
+        return (
+          <div className="flex items-center justify-center h-64 border-2 border-dashed border-border/50 rounded-xl">
+            <p className="text-muted-foreground">Settings Management Coming Soon</p>
+          </div>
+        );
       default:
         return <DashboardOverview />;
     }
@@ -61,8 +65,8 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/10">
       <div className="flex">
         <AdminSidebar 
-          activeSection={activeSection}
-          onSectionChange={setActiveSection}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
           onLogout={onLogout}
         />
         

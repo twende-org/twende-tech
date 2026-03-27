@@ -8,67 +8,87 @@ import {
   TrendingUp,
   Calendar,
   Globe,
-  ArrowUpRight
+  ArrowUpRight,
+  Database
 } from "lucide-react";
+import { useGetProjectsQuery, useGetMessagesQuery, useGetTestimonialsQuery } from "@/store/apiSlice";
+import { seedData } from "@/../seed";
+import { toast } from "sonner";
+import { useState } from "react";
 
 export function DashboardOverview() {
+  const { data: projects } = useGetProjectsQuery(undefined);
+  const { data: messages } = useGetMessagesQuery(undefined);
+  const { data: testimonials } = useGetTestimonialsQuery(undefined);
+  const [isSeeding, setIsSeeding] = useState(false);
+
+  const handleSeed = async () => {
+    setIsSeeding(true);
+    try {
+      await seedData();
+      toast.success("Initial data seeded successfully");
+    } catch (error) {
+      toast.error("Seeding failed");
+    } finally {
+      setIsSeeding(false);
+    }
+  };
+
   const stats = [
     {
       title: "Total Projects",
-      value: "12",
-      change: "+2 this month",
+      value: projects?.length.toString() || "0",
+      change: "Live from Firestore",
       icon: FolderOpen,
       color: "text-blue-500"
     },
     {
-      title: "Messages",
-      value: "24",
-      change: "+8 new",
+      title: "Active Inquiries",
+      value: messages?.filter(m => m.status === "New").length.toString() || "0",
+      change: `${messages?.length || 0} total messages`,
       icon: MessageSquare,
       color: "text-green-500"
     },
     {
       title: "Testimonials",
-      value: "18",
-      change: "+3 pending",
+      value: testimonials?.length.toString() || "0",
+      change: `${testimonials?.filter(t => t.status === "Approved").length || 0} approved`,
       icon: Users,
       color: "text-purple-500"
     },
     {
-      title: "Website Views",
-      value: "1,247",
-      change: "+12% this week",
+      title: "Engagement Score",
+      value: ((messages?.length || 0) * 12 + (projects?.length || 0) * 45).toString(),
+      change: "Based on activity",
       icon: Eye,
       color: "text-orange-500"
     }
   ];
 
   const recentActivity = [
-    {
-      action: "New project added",
-      item: "EcoTrade Platform",
-      time: "2 hours ago",
-      type: "project"
-    },
-    {
-      action: "Message received",
-      item: "Contact form submission",
-      time: "4 hours ago", 
-      type: "message"
-    },
-    {
-      action: "Testimonial approved",
-      item: "Client review from Sarah K.",
-      time: "1 day ago",
-      type: "testimonial"
-    },
-    {
+    ...(projects?.slice(0, 2).map(p => ({
       action: "Project updated",
-      item: "HealthTrack Mobile",
-      time: "2 days ago",
+      item: p.title,
+      time: "Recent",
       type: "project"
-    }
-  ];
+    })) || []),
+    ...(messages?.slice(0, 2).map(m => ({
+      action: "New inquiry",
+      item: `From ${m.name}`,
+      time: m.date,
+      type: "message"
+    })) || []),
+  ].slice(0, 4);
+
+  // Fallback if no data
+  if (recentActivity.length === 0) {
+    recentActivity.push({
+      action: "System initialized",
+      item: "Welcome to Twende Admin",
+      time: "Just now",
+      type: "system"
+    });
+  }
 
   return (
     <div className="space-y-6">
@@ -137,6 +157,10 @@ export function DashboardOverview() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
+            <Button className="w-full justify-between" variant="hero" onClick={handleSeed} disabled={isSeeding}>
+              {isSeeding ? "Seeding..." : "Seed Initial Data"}
+              <Database className="h-4 w-4" />
+            </Button>
             <Button className="w-full justify-between" variant="outline">
               Add New Project
               <ArrowUpRight className="h-4 w-4" />

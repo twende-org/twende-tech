@@ -4,6 +4,7 @@ import Services from "@/components/Services";
 import Portfolio from "@/components/Portfolio";
 import Contact from "@/components/Contact";
 import Pricing from "@/components/Pricing";
+import Testimonials from "@/components/Testimonials";
 
 const Index = () => {
   return (
@@ -20,11 +21,14 @@ const Index = () => {
         <Services />
       </section>
 
-      <section id="portfolio">
+      <section id="portfolio" className="min-h-[400px]">
         <Portfolio />
       </section>
-      <section id="contact">
+      <section id="pricing">
         <Pricing />
+      </section>
+      <section id="testimonials" className="min-h-[300px]">
+        <Testimonials />
       </section>
       <section id="contact">
         <Contact />

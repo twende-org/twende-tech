@@ -1,11 +1,4 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
   Plus, 
   Edit, 
@@ -14,48 +7,122 @@ import {
   X,
   Star,
   Search,
-  Filter
+  Filter,
+  Loader2
 } from "lucide-react";
+import { useGetTestimonialsQuery, useAddTestimonialMutation, useUpdateTestimonialMutation, useDeleteTestimonialMutation, Testimonial } from "@/store/apiSlice";
+import { toast } from "sonner";
+import { uploadFile } from "@/lib/storage";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 
 export function TestimonialsManager() {
+  const { data: testimonials, isLoading } = useGetTestimonialsQuery();
+  const [addTestimonial, { isLoading: isAdding }] = useAddTestimonialMutation();
+  const [updateTestimonial, { isLoading: isUpdating }] = useUpdateTestimonialMutation();
+  const [deleteTestimonial] = useDeleteTestimonialMutation();
+  
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingTestimonial, setEditingTestimonial] = useState<Testimonial | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    company: "",
+    position: "",
+    content: "",
+    rating: 5,
+    status: "Pending",
+    avatar: "/api/placeholder/40/40"
+  });
 
-  const testimonials = [
-    {
-      id: 1,
-      name: "Sarah Johnson",
-      company: "TechCorp Solutions",
-      position: "CEO",
-      content: "Twende Digital delivered an exceptional e-commerce platform that exceeded our expectations. Their attention to detail and technical expertise is outstanding.",
-      rating: 5,
-      status: "Approved",
-      date: "2024-01-15",
-      avatar: "/api/placeholder/40/40"
-    },
-    {
-      id: 2,
-      name: "Michael Chen",
-      company: "StartupXYZ",
-      position: "CTO",
-      content: "The mobile app they built for us has been a game-changer. Clean code, beautiful UI, and delivered on time. Highly recommended!",
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      company: "",
+      position: "",
+      content: "",
       rating: 5,
       status: "Pending",
-      date: "2024-01-12",
       avatar: "/api/placeholder/40/40"
-    },
-    {
-      id: 3,
-      name: "Emily Rodriguez",
-      company: "Health Plus",
-      position: "Product Manager",
-      content: "Professional team with great communication throughout the project. The healthcare dashboard they created is exactly what we needed.",
-      rating: 4,
-      status: "Approved",
-      date: "2024-01-08",
-      avatar: "/api/placeholder/40/40"
+    });
+    setEditingTestimonial(null);
+    setShowAddForm(false);
+  };
+
+  const handleEdit = (testimonial: Testimonial) => {
+    setEditingTestimonial(testimonial);
+    setFormData({
+      name: testimonial.name,
+      company: testimonial.company,
+      position: testimonial.position,
+      content: testimonial.content,
+      rating: testimonial.rating,
+      status: testimonial.status,
+      avatar: testimonial.avatar || "/api/placeholder/40/40"
+    });
+    setShowAddForm(true);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    let avatarUrl = editingTestimonial?.avatar || "/api/placeholder/40/40";
+    
+    try {
+      if (avatarFile) {
+        toast.info("Uploading avatar...");
+        avatarUrl = await uploadFile(avatarFile, `testimonials/${Date.now()}_${avatarFile.name}`);
+      }
+
+      const testimonialData = {
+        ...formData,
+        avatar: avatarUrl
+      };
+
+      if (editingTestimonial) {
+        await updateTestimonial({ id: editingTestimonial.id, ...testimonialData }).unwrap();
+        toast.success("Testimonial updated successfully");
+      } else {
+        await addTestimonial(testimonialData).unwrap();
+        toast.success("Testimonial added successfully");
+      }
+      resetForm();
+      setAvatarFile(null);
+    } catch (error: any) {
+      toast.error(`Error: ${error.message}`);
     }
-  ];
+  };
+
+  const handleDelete = async (id: string) => {
+    if (window.confirm("Are you sure you want to delete this testimonial?")) {
+      try {
+        await deleteTestimonial(id).unwrap();
+        toast.success("Testimonial deleted");
+      } catch (error) {
+        toast.error("Delete failed");
+      }
+    }
+  };
+
+  const handleStatusUpdate = async (id: string, status: string) => {
+    try {
+      await updateTestimonial({ id, status }).unwrap();
+      toast.success(`Testimonial ${status}`);
+    } catch (error) {
+      toast.error("Status update failed");
+    }
+  };
+
+  const filteredTestimonials = testimonials?.filter(t => 
+    t.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    t.content?.toLowerCase().includes(searchTerm.toLowerCase())
+  ) || [];
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -82,54 +149,106 @@ export function TestimonialsManager() {
   const AddTestimonialForm = () => (
     <Card className="glass-card border-border/50 mb-6">
       <CardHeader>
-        <CardTitle>Add New Testimonial</CardTitle>
+        <CardTitle>{editingTestimonial ? "Edit Testimonial" : "Add New Testimonial"}</CardTitle>
         <CardDescription>
-          Create a new client testimonial entry
+          {editingTestimonial ? "Update the existing client feedback" : "Create a new client testimonial entry"}
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Client Name</Label>
-            <Input id="name" placeholder="Enter client name" />
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Client Name</Label>
+              <Input 
+                id="name" 
+                value={formData.name}
+                onChange={(e) => setFormData({...formData, name: e.target.value})}
+                placeholder="Enter client name" 
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="company">Company</Label>
+              <Input 
+                id="company" 
+                value={formData.company}
+                onChange={(e) => setFormData({...formData, company: e.target.value})}
+                placeholder="Company name" 
+                required
+              />
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="company">Company</Label>
-            <Input id="company" placeholder="Company name" />
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="position">Position</Label>
+              <Input 
+                id="position" 
+                value={formData.position}
+                onChange={(e) => setFormData({...formData, position: e.target.value})}
+                placeholder="Job title" 
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="avatar">Client Avatar</Label>
+              <Input 
+                id="avatar" 
+                type="file"
+                onChange={(e) => setAvatarFile(e.target.files?.[0] || null)}
+                accept="image/*"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="rating">Rating</Label>
+              <select 
+                id="rating"
+                value={formData.rating}
+                onChange={(e) => setFormData({...formData, rating: parseInt(e.target.value)})}
+                className="w-full px-3 py-2 rounded-md border border-border bg-background"
+              >
+                <option value="5">5 Stars</option>
+                <option value="4">4 Stars</option>
+                <option value="3">3 Stars</option>
+                <option value="2">2 Stars</option>
+                <option value="1">1 Star</option>
+              </select>
+            </div>
           </div>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          
           <div className="space-y-2">
-            <Label htmlFor="position">Position</Label>
-            <Input id="position" placeholder="Job title" />
+            <Label htmlFor="content">Testimonial Content</Label>
+            <Textarea 
+              id="content" 
+              value={formData.content}
+              onChange={(e) => setFormData({...formData, content: e.target.value})}
+              placeholder="Enter testimonial content" 
+              rows={4} 
+              required
+            />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="rating">Rating</Label>
-            <select className="w-full px-3 py-2 rounded-md border border-border bg-background">
-              <option value="5">5 Stars</option>
-              <option value="4">4 Stars</option>
-              <option value="3">3 Stars</option>
-              <option value="2">2 Stars</option>
-              <option value="1">1 Star</option>
-            </select>
+          
+          <div className="flex gap-2">
+            <Button disabled={isAdding}>
+              {isAdding ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+              Save Testimonial
+            </Button>
+            <Button variant="outline" type="button" onClick={resetForm}>
+              Cancel
+            </Button>
           </div>
-        </div>
-        
-        <div className="space-y-2">
-          <Label htmlFor="content">Testimonial Content</Label>
-          <Textarea id="content" placeholder="Enter testimonial content" rows={4} />
-        </div>
-        
-        <div className="flex gap-2">
-          <Button>Save Testimonial</Button>
-          <Button variant="outline" onClick={() => setShowAddForm(false)}>
-            Cancel
-          </Button>
-        </div>
+        </form>
       </CardContent>
     </Card>
   );
+
+  if (isLoading) {
+    return (
+      <div className="h-64 flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -171,7 +290,7 @@ export function TestimonialsManager() {
 
       {/* Testimonials List */}
       <div className="space-y-4">
-        {testimonials.map((testimonial) => (
+        {filteredTestimonials.map((testimonial) => (
           <Card key={testimonial.id} className="glass-card border-border/50 hover:border-primary/20 transition-all">
             <CardHeader className="pb-4">
               <div className="flex items-start justify-between">
@@ -201,21 +320,31 @@ export function TestimonialsManager() {
                 <div className="flex gap-2">
                   {testimonial.status === "Pending" && (
                     <>
-                      <Button size="sm" variant="outline" className="gap-1 text-green-600 hover:text-green-600">
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="gap-1 text-green-600 hover:text-green-600"
+                        onClick={() => handleStatusUpdate(testimonial.id, "Approved")}
+                      >
                         <Check className="h-3 w-3" />
                         Approve
                       </Button>
-                      <Button size="sm" variant="outline" className="gap-1 text-red-600 hover:text-red-600">
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="gap-1 text-red-600 hover:text-red-600"
+                        onClick={() => handleStatusUpdate(testimonial.id, "Rejected")}
+                      >
                         <X className="h-3 w-3" />
                         Reject
                       </Button>
                     </>
                   )}
-                  <Button size="sm" variant="outline" className="gap-1">
+                  <Button size="sm" variant="outline" className="gap-1" onClick={() => handleEdit(testimonial)}>
                     <Edit className="h-3 w-3" />
                     Edit
                   </Button>
-                  <Button size="sm" variant="outline" className="gap-1 text-destructive hover:text-destructive">
+                  <Button size="sm" variant="outline" className="gap-1 text-destructive hover:text-destructive" onClick={() => handleDelete(testimonial.id)}>
                     <Trash2 className="h-3 w-3" />
                   </Button>
                 </div>

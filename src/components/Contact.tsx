@@ -1,57 +1,47 @@
-import { Mail, Phone, MessageCircle, MapPin, Send } from "lucide-react";
+import { Mail, Phone, MessageCircle, MapPin, Send, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import emailjs from "emailjs-com";
-
-const EnvVar = import.meta.env;
+import { useAddMessageMutation } from "@/store/apiSlice";
+import { toast } from "sonner";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     company: "",
     projectType: "",
     message: "",
   });
 
-  const [status, setStatus] = useState("");
+  const [addMessage, { isLoading: isSubmitting }] = useAddMessageMutation();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus("Sending...");
-    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
-    // console.log("FormData",formData)
-    emailjs
-      .send(
-        serviceId,       
-        templateId,      
-        formData,
-        publicKey
-      )
-      .then(
-        () => {
-          setStatus("Message sent successfully ✅");
-          setFormData({
-            name: "",
-            email: "",
-            company: "",
-            projectType: "",
-            message: "",
-          });
-        },
-        (error) => {
-          console.error("FAILED...", error.text);
-          setStatus("Failed to send ❌");
-        }
-      );
+    
+    try {
+      // Store in Firestore
+      await addMessage(formData).unwrap();
+      
+      toast.success("Message sent successfully ✅");
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        company: "",
+        projectType: "",
+        message: "",
+      });
+    } catch (error: any) {
+      console.error("FAILED...", error);
+      toast.error("Failed to send message ❌");
+    }
   };
   return (
     <div className="w-full">
@@ -86,9 +76,15 @@ const Contact = () => {
                   </div>
                 </div>
 
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Company</label>
-                  <Input placeholder="Your company name" name="company" value={formData.company} onChange={handleChange} className="bg-muted/20 border-muted" />
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Company</label>
+                    <Input placeholder="Your company name" name="company" value={formData.company} onChange={handleChange} className="bg-muted/20 border-muted" />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Phone Number</label>
+                    <Input placeholder="+255..." name="phone" value={formData.phone} onChange={handleChange} className="bg-muted/20 border-muted" />
+                  </div>
                 </div>
 
                 <div>
@@ -121,12 +117,20 @@ const Contact = () => {
                   />
                 </div>
 
-                <Button variant="hero" size="lg" className="w-full">
-                  Send Message
-                  <Send className="w-5 h-5 ml-2" />
+                <Button variant="hero" size="lg" className="w-full" disabled={isSubmitting}>
+                  {isSubmitting ? (
+                    <>
+                      Sending...
+                      <Loader2 className="w-5 h-5 ml-2 animate-spin" />
+                    </>
+                  ) : (
+                    <>
+                      Send Message
+                      <Send className="w-5 h-5 ml-2" />
+                    </>
+                  )}
                 </Button>
               </form>
-              {status && <p className="text-center mt-4 text-sm">{status}</p>}
             </div>
 
             {/* Contact Information */}
@@ -142,7 +146,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <p className="font-medium">Email</p>
-                      <p className="text-muted-foreground">info.twendedigital@gmail.com</p>
+                      <p className="text-muted-foreground">twendedigital3@gmail.com</p>
                     </div>
                   </div>
 

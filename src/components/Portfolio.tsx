@@ -1,70 +1,31 @@
-import { ExternalLink, Github, ArrowRight } from "lucide-react";
+import { ExternalLink, Github, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import twendedocs from "@/assets/portfolio/twendedocs.png";
-import tuleteApp from "@/assets/portfolio/tuleteApp.webp";
-import tuleteweb from "@/assets/portfolio/tuleteweb.png";
-import twendeAdmin from "@/assets/portfolio/twendeAdmin.png";
-import twendedigital from "@/assets/portfolio/twendedigital.png";
-// import travelguideApp from "@/assets/portfolio/travelguide-app.webp";
 import { useNavigate } from "react-router-dom";
-
+import { useGetProjectsQuery, Project } from "@/store/apiSlice";
+import { initialProjects } from "@/data/initialData";
 
 const Portfolio = () => {
   const navigate = useNavigate();
-  const projects = [
-    {
-      title: "Twende Docs",
-      description: "Professional document creation platform designed to save you time and help you present yourself effectively",
-      image: twendedocs,
-      tech: ["React Typescript", "Django", "Azam Pesa", "PostgreSQL"],
-      category: "E-Document",
-      liveUrl: "https://docs.twendedigital.tech",
-      githubUrl: "https://github.com/FineDR/document_project"
-    },
-    {
-      title: "Tulete App",
-      description: "Tulete is your one-stop app for anything you need. Order food, shop for anything, anytime, anywhere, and enjoy convenient laundry services.",
-      image: tuleteApp,
-      tech: ["Flutter", "Firebase", "Google Maps", "Push Notifications"],
-      category: "Mobile App",
-      liveUrl: "https://tulete.page.link/3Ds",
-      githubUrl: "https://github.com/mushi2/Tulete-Client-New/tree/master"
-    },
-    {
-      title: "Tulete Web",
-      description: "Tulete connects you to the best vetted restaurants, vetted convenient shopping stores, and laundry services all through one powerful mobile app. Experience convenience like never before in Dodoma, Tanzania.",
-      image: tuleteweb,
-      tech: ["React Typescript", "Tailwind CSS"],
-      category: "Web App",
-      liveUrl: "https://tulete.onrender.com",
-      githubUrl: "https://github.com/MushiVerse/tulete-dodoma-web"
-    },
+  const { data: firestoreProjects, isLoading } = useGetProjectsQuery(undefined);
 
-    {
-      title: "Twende Digital Website",
-      description: "Professional software development by skilled Tanzanian developers. We create exceptional web applications, mobile solutions, and custom software for international clients.",
-      image: twendedigital,
-      tech: ["React Typescript", "Tailwind CSS"],
-      category: "Website",
-      liveUrl: "https://twendedigital.tech",
-      githubUrl: "https://github.com/twende-org/twende-tech/"
-    },
-    {
-      title: "Twende Admin",
-      description: "The Twende Digital Website Portal",
-      image: twendeAdmin,
-      tech: ["React Typescript", "Express JS", "Tailwind CSS"],
-      category: "Web System",
-      liveUrl: "https://twendedigital.tech/admin",
-      githubUrl: "https://github.com/twende-org/twende-tech/"
-    },
+  if (isLoading) {
+    return (
+      <div className="py-24 flex justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
-  ];
+  // Merge static initial projects with dynamic firestore projects
+  // Filter out firestore projects that have the same title as an initial project to avoid duplicates if seeded
+  const otherProjects = firestoreProjects?.filter(
+    fp => !initialProjects.some(ip => ip.title === fp.title)
+  ) || [];
+  
+  const allProjects = [...initialProjects, ...otherProjects] as Project[];
 
   return (
-    <div>
-
-
+    <div className="relative">
       <section className="py-24 px-4 relative overflow-hidden">
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
@@ -80,35 +41,31 @@ const Portfolio = () => {
 
           {/* Projects Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-            {projects.map((project, index) => (
-              <div key={project.title} className="glass-card rounded-xl overflow-hidden hover-lift group">
+            {allProjects.map((project) => (
+              <div key={project.id || project.title} className="glass-card rounded-xl overflow-hidden hover-lift group">
                 {/* Project Image */}
                 <div className="relative h-48 overflow-hidden">
                   <img
-                    src={project.image}
-                    alt={`${project.title} - ${project.category}`}
+                    src={project.image || "/api/placeholder/400/300"}
+                    alt={project.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                   />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
                     <div className="flex gap-3">
-                      <a
-                        href={project.liveUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Button variant="secondary" size="sm">
-                          <ExternalLink className="w-4 h-4" />
-                        </Button>
-                      </a>
-                      <a
-                        href={project.githubUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Button variant="secondary" size="sm">
-                          <Github className="w-4 h-4" />
-                        </Button>
-                      </a>
+                      {project.liveUrl && (
+                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
+                          <Button variant="secondary" size="sm">
+                            <ExternalLink className="w-4 h-4" />
+                          </Button>
+                        </a>
+                      )}
+                      {project.githubUrl && (
+                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                          <Button variant="secondary" size="sm">
+                            <Github className="w-4 h-4" />
+                          </Button>
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -125,14 +82,14 @@ const Portfolio = () => {
                     {project.title}
                   </h3>
 
-                  <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
+                  <p className="text-muted-foreground text-sm mb-4 leading-relaxed line-clamp-2">
                     {project.description}
                   </p>
 
                   {/* Tech Stack */}
                   <div className="flex flex-wrap gap-2 mb-4">
-                    {project.tech.map((tech, techIndex) => (
-                      <span key={techIndex} className="text-xs bg-muted/30 px-2 py-1 rounded text-muted-foreground">
+                    {project.tech?.map((tech, idx) => (
+                      <span key={idx} className="text-xs bg-muted/30 px-2 py-1 rounded text-muted-foreground">
                         {tech}
                       </span>
                     ))}
@@ -140,7 +97,7 @@ const Portfolio = () => {
 
                   {/* Action Links */}
                   <div className="flex items-center justify-between">
-                    <Button variant="ghost" size="sm" className="p-6">
+                    <Button variant="ghost" size="sm" className="group-hover:text-primary p-0 h-auto" onClick={() => navigate("/contact")}>
                       View Details
                       <ArrowRight className="w-4 h-4 ml-1" />
                     </Button>
@@ -166,10 +123,6 @@ const Portfolio = () => {
         <div className="absolute top-40 left-0 w-80 h-80 bg-accent/5 rounded-full blur-3xl animate-pulse-glow"></div>
         <div className="absolute bottom-40 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '3s' }}></div>
       </section>
-
-
-
-
     </div>
   );
 };

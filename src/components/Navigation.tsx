@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 
 interface NavItem {
   name: string;
@@ -9,12 +10,13 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { name: "Home", to: "/" },
-  { name: "About Us", to: "/about" },
-  { name: "Services", to: "/services" },
-  { name: "Pricing", to: "/pricing" },
-  { name: "Our Work", to: "/portfolio" },
-  { name: "Contact", to: "/contact" },
+  { name: "Home", to: "/#home" },
+  { name: "About Us", to: "/#about" },
+  { name: "Services", to: "/#services" },
+  { name: "Pricing", to: "/#pricing" },
+  { name: "Our Work", to: "/#portfolio" },
+  { name: "Testimonials", to: "/#testimonials" },
+  { name: "Contact", to: "/#contact" },
 ];
 
 const Navigation = () => {
@@ -51,19 +53,21 @@ const Navigation = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
-              <Link
+              <HashLink
                 key={item.name}
+                smooth
                 to={item.to}
+                scroll={(el) => window.scrollTo({ top: el.offsetTop - 80, behavior: 'smooth' })}
                 className="text-foreground hover:text-primary transition-colors font-medium"
               >
                 {item.name}
-              </Link>
+              </HashLink>
             ))}
-            <Link to="/contact">
+            <HashLink smooth to="/#contact">
               <Button variant="hero" size="sm">
                 Get Started
               </Button>
-            </Link>
+            </HashLink>
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -83,21 +87,23 @@ const Navigation = () => {
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 glass-card mt-2 rounded-lg">
               {navItems.map((item) => (
-                <Link
+                <HashLink
                   key={item.name}
+                  smooth
                   to={item.to}
+                  scroll={(el) => window.scrollTo({ top: el.offsetTop - 80, behavior: 'smooth' })}
                   className="block px-3 py-2 text-foreground hover:text-primary transition-colors font-medium"
                   onClick={() => setIsOpen(false)}
                 >
                   {item.name}
-                </Link>
+                </HashLink>
               ))}
               <div className="pt-2">
-                <Link to="/contact" onClick={() => setIsOpen(false)}>
+                <HashLink smooth to="/#contact" onClick={() => setIsOpen(false)}>
                   <Button variant="hero" size="sm" className="w-full">
                     Get Started
                   </Button>
-                </Link>
+                </HashLink>
               </div>
             </div>
           </div>

@@ -12,45 +12,108 @@ import {
   Eye,
   Search,
   Filter,
-  ExternalLink
+  ExternalLink,
+  Loader2
 } from "lucide-react";
+import { useGetProjectsQuery, useAddProjectMutation, useUpdateProjectMutation, useDeleteProjectMutation, Project } from "@/store/apiSlice";
+import { toast } from "sonner";
+import { uploadFile } from "@/lib/storage";
 
 export function ProjectsManager() {
-  const [showAddForm, setShowAddForm] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const projects = [
-    {
-      id: 1,
-      title: "EcoTrade Platform",
-      description: "Sustainable trading marketplace with real-time analytics",
-      tech: ["React", "Node.js", "MongoDB"],
+  const { data: projects, isLoading } = useGetProjectsQuery();
+  const [addProject, { isLoading: isAdding }] = useAddProjectMutation();
+  const [updateProject, { isLoading: isUpdating }] = useUpdateProjectMutation();
+  const [deleteProject] = useDeleteProjectMutation();
+
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    tech: "",
+    status: "Live",
+    liveUrl: "",
+    githubUrl: "",
+    category: "Web App"
+  });
+
+  const resetForm = () => {
+    setFormData({
+      title: "",
+      description: "",
+      tech: "",
       status: "Live",
-      image: "/api/placeholder/300/200",
-      liveUrl: "https://ecotrade.example.com",
-      lastUpdated: "2024-01-15"
-    },
-    {
-      id: 2,
-      title: "HealthTrack Mobile",
-      description: "Personal health monitoring and fitness tracking app",
-      tech: ["React Native", "Firebase", "TypeScript"],
-      status: "In Progress",
-      image: "/api/placeholder/300/200",
       liveUrl: "",
-      lastUpdated: "2024-01-10"
-    },
-    {
-      id: 3,
-      title: "FinanceFlow Dashboard",
-      description: "Comprehensive financial management dashboard",
-      tech: ["Next.js", "PostgreSQL", "Chart.js"],
-      status: "Live",
-      image: "/api/placeholder/300/200",
-      liveUrl: "https://financeflow.example.com",
-      lastUpdated: "2024-01-08"
+      githubUrl: "",
+      category: "Web App"
+    });
+    setEditingProject(null);
+    setShowForm(false);
+  };
+
+  const handleEdit = (project: Project) => {
+    setEditingProject(project);
+    setFormData({
+      title: project.title,
+      description: project.description,
+      tech: Array.isArray(project.tech) ? project.tech.join(", ") : project.tech,
+      status: project.status,
+      liveUrl: project.liveUrl || "",
+      githubUrl: project.githubUrl || "",
+      category: project.category || "Web App"
+    });
+    setShowForm(true);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    let imageUrl = editingProject?.image || "";
+    
+    try {
+      if (imageFile) {
+        toast.info("Uploading image...");
+        imageUrl = await uploadFile(imageFile, `projects/${Date.now()}_${imageFile.name}`);
+      }
+
+      const projectData = {
+        ...formData,
+        image: imageUrl,
+        tech: formData.tech.split(",").map(t => t.trim()).filter(Boolean)
+      };
+
+      if (editingProject) {
+        await updateProject({ id: editingProject.id, ...projectData }).unwrap();
+        toast.success("Project updated successfully");
+      } else {
+        await addProject(projectData).unwrap();
+        toast.success("Project added successfully");
+      }
+      resetForm();
+      setImageFile(null);
+    } catch (error: any) {
+      toast.error(`Error: ${error.message}`);
     }
-  ];
+  };
+
+  const handleDelete = async (id: string) => {
+    if (window.confirm("Are you sure you want to delete this project?")) {
+      try {
+        await deleteProject(id).unwrap();
+        toast.success("Project deleted");
+      } catch (error) {
+        toast.error("Delete failed");
+      }
+    }
+  };
+
+  const filteredProjects = projects?.filter(p => 
+    p.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    p.description?.toLowerCase().includes(searchTerm.toLowerCase())
+  ) || [];
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -66,52 +129,91 @@ export function ProjectsManager() {
   const AddProjectForm = () => (
     <Card className="glass-card border-border/50 mb-6">
       <CardHeader>
-        <CardTitle>Add New Project</CardTitle>
+        <CardTitle>{editingProject ? "Edit Project" : "Add New Project"}</CardTitle>
         <CardDescription>
-          Create a new portfolio project entry
+          {editingProject ? "Update the existing entry" : "Create a new portfolio project entry"}
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="title">Project Title</Label>
-            <Input id="title" placeholder="Enter project title" />
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="title">Project Title</Label>
+              <Input 
+                id="title" 
+                value={formData.title}
+                onChange={(e) => setFormData({...formData, title: e.target.value})}
+                placeholder="Enter project title" 
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="status">Status</Label>
+              <select 
+                id="status"
+                value={formData.status}
+                onChange={(e) => setFormData({...formData, status: e.target.value})}
+                className="w-full px-3 py-2 rounded-md border border-border bg-background"
+              >
+                <option>Live</option>
+                <option>In Progress</option>
+                <option>Completed</option>
+              </select>
+            </div>
           </div>
+          
           <div className="space-y-2">
-            <Label htmlFor="status">Status</Label>
-            <select className="w-full px-3 py-2 rounded-md border border-border bg-background">
-              <option>Live</option>
-              <option>In Progress</option>
-              <option>Completed</option>
-            </select>
+            <Label htmlFor="description">Description</Label>
+            <Textarea 
+              id="description" 
+              value={formData.description}
+              onChange={(e) => setFormData({...formData, description: e.target.value})}
+              placeholder="Project description" 
+              required
+            />
           </div>
-        </div>
-        
-        <div className="space-y-2">
-          <Label htmlFor="description">Description</Label>
-          <Textarea id="description" placeholder="Project description" />
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="tech">Technologies (comma-separated)</Label>
-            <Input id="tech" placeholder="React, Node.js, MongoDB" />
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="image">Project Image</Label>
+              <Input 
+                id="image" 
+                type="file"
+                onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                accept="image/*"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="liveUrl">Live URL (optional)</Label>
+              <Input 
+                id="liveUrl" 
+                value={formData.liveUrl}
+                onChange={(e) => setFormData({...formData, liveUrl: e.target.value})}
+                placeholder="https://example.com" 
+              />
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="liveUrl">Live URL (optional)</Label>
-            <Input id="liveUrl" placeholder="https://example.com" />
+          
+          <div className="flex gap-2">
+            <Button disabled={isAdding || isUpdating}>
+              {editingProject ? "Update Project" : "Save Project"}
+            </Button>
+            <Button variant="outline" type="button" onClick={resetForm}>
+              Cancel
+            </Button>
           </div>
-        </div>
-        
-        <div className="flex gap-2">
-          <Button>Save Project</Button>
-          <Button variant="outline" onClick={() => setShowAddForm(false)}>
-            Cancel
-          </Button>
-        </div>
+        </form>
       </CardContent>
     </Card>
   );
+
+  if (isLoading) {
+    return (
+      <div className="h-64 flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -121,14 +223,14 @@ export function ProjectsManager() {
           <h2 className="text-2xl font-bold">Projects Manager</h2>
           <p className="text-muted-foreground">Manage your portfolio projects</p>
         </div>
-        <Button onClick={() => setShowAddForm(!showAddForm)} className="gap-2">
+        <Button onClick={() => setShowForm(!showForm)} className="gap-2">
           <Plus className="h-4 w-4" />
-          Add Project
+          {showForm ? "Close Form" : "Add Project"}
         </Button>
       </div>
 
       {/* Add Form */}
-      {showAddForm && <AddProjectForm />}
+      {showForm && <AddProjectForm />}
 
       {/* Search and Filter */}
       <Card className="glass-card border-border/50">
@@ -153,7 +255,7 @@ export function ProjectsManager() {
 
       {/* Projects Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-        {projects.map((project) => (
+        {filteredProjects.map((project) => (
           <Card key={project.id} className="glass-card border-border/50 hover:border-primary/20 transition-all">
             <CardHeader className="pb-3">
               <div className="flex items-start justify-between">
@@ -175,8 +277,12 @@ export function ProjectsManager() {
             </CardHeader>
             
             <CardContent className="space-y-4">
-              <div className="aspect-video bg-muted/20 rounded-lg border border-border/50 flex items-center justify-center">
-                <p className="text-sm text-muted-foreground">Project Image</p>
+              <div className="aspect-video bg-muted/20 rounded-lg border border-border/50 flex items-center justify-center overflow-hidden">
+                {project.image ? (
+                  <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+                ) : (
+                  <p className="text-sm text-muted-foreground">No Image</p>
+                )}
               </div>
               
               <p className="text-sm text-muted-foreground line-clamp-2">
@@ -184,7 +290,7 @@ export function ProjectsManager() {
               </p>
               
               <div className="flex flex-wrap gap-1">
-                {project.tech.map((tech, index) => (
+                {project.tech?.map((tech: string, index: number) => (
                   <Badge key={index} variant="secondary" className="text-xs">
                     {tech}
                   </Badge>
@@ -192,22 +298,22 @@ export function ProjectsManager() {
               </div>
               
               <div className="flex gap-2 pt-2">
-                <Button size="sm" variant="outline" className="flex-1 gap-1">
-                  <Eye className="h-3 w-3" />
-                  View
-                </Button>
-                <Button size="sm" variant="outline" className="flex-1 gap-1">
+                {project.liveUrl && (
+                  <Button size="sm" variant="outline" className="flex-1 gap-1" asChild>
+                    <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
+                      <ExternalLink className="h-3 w-3" />
+                      Live
+                    </a>
+                  </Button>
+                )}
+                <Button size="sm" variant="outline" className="flex-1 gap-1" onClick={() => handleEdit(project)}>
                   <Edit className="h-3 w-3" />
                   Edit
                 </Button>
-                <Button size="sm" variant="outline" className="gap-1 text-destructive hover:text-destructive">
+                <Button size="sm" variant="outline" className="gap-1 text-destructive hover:text-destructive" onClick={() => handleDelete(project.id)}>
                   <Trash2 className="h-3 w-3" />
                 </Button>
               </div>
-              
-              <p className="text-xs text-muted-foreground">
-                Updated: {project.lastUpdated}
-              </p>
             </CardContent>
           </Card>
         ))}

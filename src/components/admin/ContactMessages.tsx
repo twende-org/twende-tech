@@ -15,51 +15,53 @@ import {
   Filter,
   Clock,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  Loader2
 } from "lucide-react";
+import { useGetMessagesQuery, useUpdateMessageMutation, useDeleteMessageMutation } from "@/store/apiSlice";
+import { toast } from "sonner";
 
 export function ContactMessages() {
+  const { data: messages, isLoading } = useGetMessagesQuery();
+  const [updateMessage] = useUpdateMessageMutation();
+  const [deleteMessage] = useDeleteMessageMutation();
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedMessage, setSelectedMessage] = useState<number | null>(null);
+  const [selectedMessage, setSelectedMessage] = useState<string | null>(null);
 
-  const messages = [
-    {
-      id: 1,
-      name: "David Wilson",
-      email: "david@techstartup.com",
-      phone: "+1 (555) 123-4567",
-      subject: "Web Development Project",
-      message: "Hi, I'm interested in building a modern e-commerce platform for our startup. We need a full-stack solution with payment integration and inventory management. Could we schedule a call to discuss the requirements?",
-      status: "New",
-      priority: "High",
-      date: "2024-01-15",
-      time: "10:30 AM"
-    },
-    {
-      id: 2,
-      name: "Lisa Anderson",
-      email: "lisa@healthcorp.com",
-      phone: "+1 (555) 987-6543",
-      subject: "Mobile App Development",
-      message: "We're looking for a team to develop a healthcare mobile app with patient management features. The app needs to be HIPAA compliant and work on both iOS and Android.",
-      status: "In Progress",
-      priority: "Medium",
-      date: "2024-01-14",
-      time: "2:15 PM"
-    },
-    {
-      id: 3,
-      name: "Robert Chen",
-      email: "robert@financeco.com",
-      phone: "+1 (555) 456-7890",
-      subject: "UI/UX Design Services",
-      message: "Hello, we need help redesigning our financial dashboard. Looking for modern, clean design that improves user experience. Can you provide some examples of similar work?",
-      status: "Replied",
-      priority: "Low",
-      date: "2024-01-13",
-      time: "4:45 PM"
+  const handleStatusUpdate = async (id: string, status: string) => {
+    try {
+      await updateMessage({ id, status }).unwrap();
+      toast.success(`Message marked as ${status}`);
+    } catch (error) {
+      toast.error("Status update failed");
     }
-  ];
+  };
+
+  const handleDelete = async (id: string) => {
+    if (window.confirm("Are you sure you want to delete this message?")) {
+      try {
+        await deleteMessage(id).unwrap();
+        toast.success("Message deleted");
+        setSelectedMessage(null);
+      } catch (error) {
+        toast.error("Delete failed");
+      }
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="h-64 flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  const filteredMessages = messages?.filter(msg => 
+    msg.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    msg.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    msg.message?.toLowerCase().includes(searchTerm.toLowerCase())
+  ) || [];
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -143,7 +145,7 @@ export function ContactMessages() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">Messages</h3>
-          {messages.map((message) => (
+          {filteredMessages.map((message) => (
             <Card 
               key={message.id} 
               className={`glass-card border-border/50 hover:border-primary/20 transition-all cursor-pointer ${
@@ -204,7 +206,7 @@ export function ContactMessages() {
           <h3 className="text-lg font-semibold">Message Details</h3>
           {selectedMessage ? (
             (() => {
-              const message = messages.find(m => m.id === selectedMessage);
+              const message = messages?.find(m => m.id === selectedMessage);
               if (!message) return null;
               
               return (
@@ -237,8 +239,24 @@ export function ContactMessages() {
                       </div>
                       <div className="flex items-center gap-2">
                         <Phone className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">{message.phone}</span>
+                        <span className="text-sm">{message.phone || "No phone provided"}</span>
                       </div>
+                      {message.company && (
+                        <div className="flex items-center gap-2">
+                          <div className="w-4 h-4 rounded-full bg-primary/20 flex items-center justify-center">
+                            <span className="text-[10px] font-bold">C</span>
+                          </div>
+                          <span className="text-sm">{message.company}</span>
+                        </div>
+                      )}
+                      {message.projectType && (
+                        <div className="flex items-center gap-2">
+                          <div className="w-4 h-4 rounded-full bg-accent/20 flex items-center justify-center">
+                            <span className="text-[10px] font-bold">P</span>
+                          </div>
+                          <span className="text-sm">{message.projectType}</span>
+                        </div>
+                      )}
                     </div>
                     
                     {/* Message Content */}
@@ -251,15 +269,26 @@ export function ContactMessages() {
                     
                     {/* Actions */}
                     <div className="flex gap-2 pt-4 border-t border-border/50">
-                      <Button className="gap-2">
-                        <Reply className="h-4 w-4" />
-                        Reply
+                      <Button className="gap-2" asChild>
+                        <a href={`mailto:${message.email}`}>
+                          <Reply className="h-4 w-4" />
+                          Reply
+                        </a>
                       </Button>
-                      <Button variant="outline" className="gap-2">
+                      <Button 
+                        variant="outline" 
+                        className="gap-2"
+                        onClick={() => handleStatusUpdate(message.id, "Archived")}
+                        disabled={message.status === "Archived"}
+                      >
                         <Archive className="h-4 w-4" />
                         Archive
                       </Button>
-                      <Button variant="outline" className="gap-2 text-destructive hover:text-destructive">
+                      <Button 
+                        variant="outline" 
+                        className="gap-2 text-destructive hover:text-destructive"
+                        onClick={() => handleDelete(message.id)}
+                      >
                         <Trash2 className="h-4 w-4" />
                         Delete
                       </Button>

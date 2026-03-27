@@ -4,6 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Lock, User } from "lucide-react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/lib/firebase";
+import { toast } from "sonner";
 
 interface AdminLoginProps {
   onLogin: () => void;
@@ -12,12 +15,20 @@ interface AdminLoginProps {
 export function AdminLogin({ onLogin }: AdminLoginProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate login for demo
-    if (email && password) {
+    setIsLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
       onLogin();
+      toast.success("Logged in successfully");
+    } catch (error: any) {
+      console.error("Login error:", error);
+      toast.error(error.message || "Failed to login");
+    } finally {
+      setIsLoading(false);
     }
   };
 

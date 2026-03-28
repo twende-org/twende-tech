@@ -97,9 +97,14 @@ const Portfolio = () => {
 
                   {/* Action Links */}
                   <div className="flex items-center justify-between">
-                    <Button variant="ghost" size="sm" className="group-hover:text-primary p-0 h-auto" onClick={() => navigate("/contact")}>
-                      View Details
-                      <ArrowRight className="w-4 h-4 ml-1" />
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="group-hover:text-primary p-0 h-auto gap-1" 
+                      onClick={() => navigate(`/portfolio/${project.id}`)}
+                    >
+                      View Case Study
+                      <ArrowRight className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>

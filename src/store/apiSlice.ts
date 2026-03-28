@@ -22,6 +22,9 @@ export interface Project {
   githubUrl?: string;
   category: string;
   image?: string;
+  challenge?: string;
+  solution?: string;
+  results?: string[];
   createdAt: any;
   updatedAt: any;
 }

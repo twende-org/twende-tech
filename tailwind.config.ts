@@ -25,6 +25,17 @@ const config = {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        "bg-card": "hsl(var(--bg-card))",
+        "bg-elevated": "hsl(var(--bg-elevated))",
+        path: {
+          dev: "hsl(var(--path-dev))",
+          support: "hsl(var(--path-support))",
+          product: "hsl(var(--path-product))",
+        },
+        success: "hsl(var(--success))",
+        warning: "hsl(var(--warning))",
+        error: "hsl(var(--error))",
+        info: "hsl(var(--info))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",

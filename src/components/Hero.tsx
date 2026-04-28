@@ -14,65 +14,49 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4">
-      {/* Floating Tech Icons */}
-      <div className="absolute inset-0 pointer-events-none">
-        <Code2 className="absolute top-20 left-10 w-8 h-8 text-primary/30 animate-tech-float" style={{ animationDelay: '0s' }} />
-        <Smartphone className="absolute top-32 right-20 w-6 h-6 text-accent/40 animate-tech-float" style={{ animationDelay: '2s' }} />
-        <Palette className="absolute bottom-40 left-16 w-7 h-7 text-primary-glow/30 animate-tech-float" style={{ animationDelay: '4s' }} />
-        <Zap className="absolute bottom-60 right-32 w-9 h-9 text-accent-glow/40 animate-tech-float" style={{ animationDelay: '1s' }} />
-        <Code2 className="absolute top-1/2 left-1/4 w-5 h-5 text-primary/20 animate-tech-float" style={{ animationDelay: '3s' }} />
-        <Smartphone className="absolute top-1/3 right-1/3 w-6 h-6 text-accent/30 animate-tech-float" style={{ animationDelay: '5s' }} />
-      </div>
+    <section className="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden px-4 pt-20">
+      {/* Background Glow Effects */}
+      <div className="absolute top-[-10%] left-[20%] w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] animate-pulse-glow"></div>
+      <div className="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] bg-accent/10 rounded-full blur-[100px] animate-pulse-glow" style={{ animationDelay: '2s' }}></div>
 
-      <div className="max-w-6xl mx-auto text-center relative z-10">
+      <div className="max-w-6xl mx-auto text-center relative z-10 mb-16">
+        {/* Badge */}
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-8 animate-slide-up">
+          <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+          <span className="text-sm font-medium text-primary-glow">Building the future of African Tech</span>
+        </div>
+
         {/* Main Heading */}
-        <div className="animate-slide-up">
-          <h1 className="text-6xl pt-14 md:text-8xl font-black mb-6 leading-tight">
-            <span className="gradient-text">Twende</span>
-            <br />
-            <span className="text-foreground">Digital</span>
+        <div className="animate-slide-up" style={{ animationDelay: '0.1s' }}>
+          <h1 className="text-5xl md:text-8xl font-black mb-8 leading-[1.1] tracking-tight">
+            Build. Maintain. <br />
+            <span className="gradient-text">Launch instantly.</span>
           </h1>
 
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-8 leading-relaxed">
-            Your business deserves a reliable tech team. Get a full Software Team from 150,000 TZS/month — updates, security, hosting & support included. DM for a quote.
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed font-medium">
+            Custom software development, ongoing technical support, and ready-made business software — <span className="text-foreground">all in one place.</span>
           </p>
-
-
         </div>
 
-        {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-          <Button variant="hero" size="xl" className="group" onClick={goToContact}>
-            Start Your Project
-            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+        {/* CTA Buttons - 3 Path System */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-slide-up" style={{ animationDelay: '0.2s' }}>
+          <Button variant="hero" size="xl" className="group min-w-[200px]" onClick={() => navigate("/services?type=dev")}>
+            Build a Product
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform ml-2" />
           </Button>
-          <Button variant="glass" size="xl" onClick={goToPortfolio}>
-            View Our Work
+          <Button 
+            variant="secondary" 
+            size="xl" 
+            className="min-w-[200px] bg-accent hover:bg-accent/90 text-white border-none"
+            onClick={() => navigate("/pricing?tab=support")}
+          >
+            Get Support
           </Button>
-        </div>
-
-        {/* Tech Stack Preview */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto animate-slide-up" style={{ animationDelay: '0.4s' }}>
-          {[
-            { name: "React & Next.js", icon: Code2 },
-            { name: "Mobile Apps", icon: Smartphone },
-            { name: "UI/UX Design", icon: Palette },
-            { name: "Fast & Scalable", icon: Zap }
-          ].map((tech) => (
-            <div key={tech.name} className="glass-card p-6 rounded-xl hover-lift group">
-              <tech.icon className="w-8 h-8 text-primary mb-3 mx-auto group-hover:text-primary-glow transition-colors" />
-              <p className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
-                {tech.name}
-              </p>
-            </div>
-          ))}
+          <Button variant="outline" size="xl" className="min-w-[200px] border-white/10 hover:bg-white/5" onClick={() => navigate("/products")}>
+            Explore Software
+          </Button>
         </div>
       </div>
-
-      {/* Background Glow Effects */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse-glow"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-accent/10 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '1.5s' }}></div>
     </section>
   );
 };

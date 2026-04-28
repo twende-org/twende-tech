@@ -10,11 +10,14 @@ import Portfolio from "./components/Portfolio";
 import Layout from "./components/Layout";
 import ProjectDetail from "./pages/ProjectDetail";
 
+import SoftwareProducts from "./pages/SoftwareProducts";
+
 const App = () => (
   <Routes>
     <Route path="/" element={<Layout><Index /></Layout>} />
     <Route path="/about" element={<Layout><About /></Layout>} />
     <Route path="/services" element={<Layout><Services /></Layout>} />
+    <Route path="/products" element={<Layout><SoftwareProducts /></Layout>} />
     <Route path="/pricing" element={<Layout><Pricing /></Layout>} />
     <Route path="/portfolio" element={<Layout><Portfolio /></Layout>} />
     <Route path="/portfolio/:id" element={<Layout><ProjectDetail /></Layout>} />

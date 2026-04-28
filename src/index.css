@@ -6,25 +6,33 @@
 
 @layer base {
   :root {
-    /* Core Brand Colors */
-    --background: 240 10% 3.9%;
+    /* Background Hierarchy - SaaS Grade */
+    --background: 240 10% 3.9%;      /* BG 1: Main Page */
+    --bg-card: 240 10% 6%;          /* BG 2: Cards */
+    --bg-elevated: 240 10% 10%;     /* BG 3: Modals/Elevated */
+    
     --foreground: 0 0% 98%;
 
     /* Surface Colors */
-    --card: 240 10% 3.9%;
+    --card: 240 10% 6%;
     --card-foreground: 0 0% 98%;
     
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
 
-    /* Brand Identity */
-    --primary: 217 91% 60%;
+    /* Brand Identity (Preserved) */
+    --primary: 217 91% 60%;         /* Primary Blue */
     --primary-foreground: 0 0% 98%;
     --primary-glow: 217 91% 70%;
 
+    /* Path Colors */
+    --path-dev: 217 91% 60%;        /* Custom Dev = Primary */
+    --path-support: 142 76% 36%;    /* Support = Accent Green */
+    --path-product: 215 20% 65%;    /* Products = Neutral Slate */
+
     /* Interactive Elements */
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 10% 3.9%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
 
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
@@ -32,6 +40,12 @@
     --accent: 142 76% 36%;
     --accent-foreground: 0 0% 98%;
     --accent-glow: 142 76% 46%;
+
+    /* Functional UI */
+    --success: 142 76% 36%;
+    --warning: 38 92% 50%;
+    --error: 0 84.2% 60.2%;
+    --info: 199 89% 48%;
 
     /* System Colors */
     --destructive: 0 84.2% 60.2%;
@@ -42,44 +56,24 @@
     --ring: 217 91% 60%;
 
     /* Design Tokens */
-    --radius: 0.75rem;
+    --radius: 1rem; /* 2xl rounded style */
     
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(142 76% 36%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(240 10% 3.9%) 0%, hsl(240 6% 10%) 50%, hsl(217 91% 8%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(240 5% 6%) 0%, hsl(240 4% 9%) 100%);
-    --gradient-accent: linear-gradient(45deg, hsl(217 91% 60%) 0%, hsl(142 76% 36%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 40%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(142 76% 36%) 0%, hsl(142 76% 26%) 100%);
+    --gradient-hero: radial-gradient(circle at top center, hsl(240 10% 10%) 0%, hsl(240 10% 3.9%) 100%);
+    --gradient-card: linear-gradient(145deg, hsla(240, 10%, 6%, 0.8) 0%, hsla(240, 10%, 4%, 0.8) 100%);
     
     /* Glass Effect */
-    --glass-bg: hsla(240, 10%, 3.9%, 0.8);
-    --glass-border: hsla(217, 91%, 60%, 0.2);
+    --glass-bg: hsla(240, 10%, 6%, 0.7);
+    --glass-border: hsla(0, 0%, 100%, 0.08);
     
     /* Shadows */
-    --shadow-glow: 0 0 50px hsla(217, 91%, 60%, 0.3);
-    --shadow-accent-glow: 0 0 30px hsla(142, 76%, 36%, 0.4);
-    --shadow-card: 0 8px 32px hsla(240, 10%, 3.9%, 0.4);
-    --shadow-elevated: 0 20px 60px hsla(240, 10%, 3.9%, 0.6);
-    
-    /* Animation Variables */
-    --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    --transition-elastic: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --shadow-glow: 0 0 20px hsla(217, 91%, 60%, 0.15);
   }
 
   .dark {

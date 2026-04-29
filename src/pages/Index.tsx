@@ -10,12 +10,17 @@ import PathSelector from "@/components/PathSelector";
 import HowItWorks from "@/components/HowItWorks";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { SEO } from "@/components/SEO";
 
 const Index = () => {
   const navigate = useNavigate();
 
   return (
     <main className="w-full">
+      <SEO 
+        title="Engineering Excellence & Digital Innovation" 
+        description="Twende Digital provides high-authority tech engineering, enterprise software innovation, and managed digital services for forward-thinking companies."
+      />
       <section id="home">
         <Hero />
       </section>

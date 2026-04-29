@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Loader2, Mail, Lock, ArrowRight, ShieldCheck } from "lucide-react";
-import SEO from "@/components/SEO";
+import { SEO } from "@/components/SEO";
 
 export default function Login() {
   const [email, setEmail] = useState("");

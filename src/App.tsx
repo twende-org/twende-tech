@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
-import SEO from "./components/SEO";
+import { SEO } from "./components/SEO";
 import { useAuth } from "./context/AuthContext";
 
 import Index from "./pages/Index";
@@ -15,6 +15,8 @@ import ProjectDetail from "./pages/ProjectDetail";
 import Login from "./pages/Login";
 import ClientDashboard from "./pages/ClientDashboard";
 import { ClientLayout } from "./components/client/ClientLayout";
+import { ClientProjects } from "./components/client/ClientProjects";
+import { ClientSupport } from "./components/client/ClientSupport";
 import Admin from "./pages/Admin";
 
 import SoftwareProducts from "./pages/SoftwareProducts";
@@ -71,12 +73,25 @@ const App = () => (
           </ClientLayout>
         </ProtectedRoute>
       } />
-      {/* Placeholder for other client routes */}
-      <Route path="/dashboard/*" element={
+      <Route path="/dashboard/projects" element={
+        <ProtectedRoute requiredRole="client">
+          <ClientLayout>
+            <ClientProjects />
+          </ClientLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/dashboard/support" element={
+        <ProtectedRoute requiredRole="client">
+          <ClientLayout>
+            <ClientSupport />
+          </ClientLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/dashboard/health" element={
         <ProtectedRoute requiredRole="client">
           <ClientLayout>
             <div className="h-64 flex items-center justify-center glass-card rounded-[2rem]">
-              <p className="text-muted-foreground">Module Coming Soon</p>
+              <p className="text-muted-foreground">Service Health Monitoring Coming Soon</p>
             </div>
           </ClientLayout>
         </ProtectedRoute>

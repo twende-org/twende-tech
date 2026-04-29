@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Textarea } from "@/components/ui/textarea";
 import { 
   Mail, 
   Phone, 
@@ -16,7 +17,8 @@ import {
   Clock,
   CheckCircle,
   AlertCircle,
-  Loader2
+  Loader2,
+  X
 } from "lucide-react";
 import { useGetMessagesQuery, useUpdateMessageMutation, useDeleteMessageMutation } from "@/store/apiSlice";
 import { sendLeadResponse } from "@/services/email";

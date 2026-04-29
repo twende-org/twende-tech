@@ -1,0 +1,31 @@
+
+> vite_react_shadcn_ts@0.0.0 build
+> vite build
+
+vite v5.4.10 building for production...
+transforming...
+Browserslist: browsers data (caniuse-lite) is 18 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✓ 1772 modules transformed.
+x Build failed in 7.10s
+error during build:
+src/App.tsx (3:7): "default" is not exported by "src/components/SEO.tsx", imported by "src/App.tsx".
+file: /home/zalongwa/taskplace/twende-tech/src/App.tsx:3:7
+
+1: import { Routes, Route, Navigate } from "react-router-dom";
+2: import { HelmetProvider } from "react-helmet-async";
+3: import SEO from "./components/SEO";
+          ^
+4: import { useAuth } from "./context/AuthContext";
+
+    at getRollupError (file:///home/zalongwa/taskplace/twende-tech/node_modules/rollup/dist/es/shared/parseAst.js:395:41)
+    at error (file:///home/zalongwa/taskplace/twende-tech/node_modules/rollup/dist/es/shared/parseAst.js:391:42)
+    at Module.error (file:///home/zalongwa/taskplace/twende-tech/node_modules/rollup/dist/es/shared/node-entry.js:15535:16)
+    at Module.traceVariable (file:///home/zalongwa/taskplace/twende-tech/node_modules/rollup/dist/es/shared/node-entry.js:15984:29)
+    at ModuleScope.findVariable (file:///home/zalongwa/taskplace/twende-tech/node_modules/rollup/dist/es/shared/node-entry.js:13770:39)
+    at ReturnValueScope.findVariable (file:///home/zalongwa/taskplace/twende-tech/node_modules/rollup/dist/es/shared/node-entry.js:5252:38)
+    at FunctionBodyScope.findVariable (file:///home/zalongwa/taskplace/twende-tech/node_modules/rollup/dist/es/shared/node-entry.js:5252:38)
+    at Identifier.bind (file:///home/zalongwa/taskplace/twende-tech/node_modules/rollup/dist/es/shared/node-entry.js:5035:40)
+    at CallExpression.bind (file:///home/zalongwa/taskplace/twende-tech/node_modules/rollup/dist/es/shared/node-entry.js:2851:28)
+    at CallExpression.bind (file:///home/zalongwa/taskplace/twende-tech/node_modules/rollup/dist/es/shared/node-entry.js:11235:15)

@@ -11,6 +11,8 @@ import { TestimonialsManager } from "./TestimonialsManager";
 import { ContactMessages } from "./ContactMessages";
 import { LeadsManager } from "./LeadsManager";
 import { UserManager } from "./UserManager";
+import { AdminChat } from "./AdminChat";
+import { AnalyticsDashboard } from "./AnalyticsDashboard";
 
 interface AdminDashboardProps {
   onLogout: () => void;
@@ -24,6 +26,8 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
     switch (activeTab) {
       case "dashboard":
         return <DashboardOverview />;
+      case "analytics":
+        return <AnalyticsDashboard />;
       case "projects":
         return <ProjectsManager />;
       case "testimonials":
@@ -34,6 +38,8 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
         return <LeadsManager />;
       case "users":
         return <UserManager />;
+      case "chats":
+        return <AdminChat />;
       case "settings":
         return (
           <div className="flex items-center justify-center h-64 border-2 border-dashed border-border/50 rounded-xl">

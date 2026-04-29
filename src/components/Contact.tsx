@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { submitLead } from "@/services/leads";
+import { sendAdminNotification } from "@/services/email";
 import { toast } from "sonner";
 
 const Contact = () => {
@@ -32,6 +33,7 @@ const Contact = () => {
     setIsSubmitting(true);
     
     try {
+      // 1. Save to Firestore
       const result = await submitLead({
         name: formData.name,
         email: formData.email,
@@ -44,6 +46,15 @@ const Contact = () => {
       });
       
       if (result.success) {
+        // 2. Notify Admin via Email
+        await sendAdminNotification({
+          name: formData.name,
+          email: formData.email,
+          company: formData.company,
+          projectType: formData.projectType,
+          message: formData.message
+        });
+
         toast.success("Inquiry submitted successfully! Our team will contact you shortly. ✅");
         setFormData({
           name: "",

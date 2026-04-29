@@ -11,7 +11,7 @@ import {
   Globe
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
-import SEO from "@/components/SEO";
+import { SEO } from "@/components/SEO";
 
 export default function ClientDashboard() {
   const { user } = useAuth();

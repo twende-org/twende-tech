@@ -15,6 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ChatModule } from "./ChatModule";
 
 interface ClientLayoutProps {
   children: React.ReactNode;
@@ -140,6 +141,7 @@ export function ClientLayout({ children }: ClientLayoutProps) {
         <div className="p-6 md:p-10 max-w-7xl mx-auto">
           {children}
         </div>
+        <ChatModule />
       </main>
     </div>
   );

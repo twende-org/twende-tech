@@ -8,6 +8,7 @@ import {
   doc, 
   query, 
   orderBy,
+  where,
   serverTimestamp
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -59,10 +60,35 @@ export interface Message {
   createdAt: any;
 }
 
+export interface Ticket {
+  id: string;
+  clientId: string;
+  subject: string;
+  description: string;
+  status: string;
+  priority: string;
+  createdAt: any;
+}
+
+// Helper to handle non-serializable Firestore data
+const serializeData = (doc: any) => {
+  const data = doc.data();
+  const serialized: any = { id: doc.id };
+  
+  for (const key in data) {
+    if (data[key]?.toDate) {
+      serialized[key] = data[key].toDate().toISOString();
+    } else {
+      serialized[key] = data[key];
+    }
+  }
+  return serialized;
+};
+
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fakeBaseQuery(),
-  tagTypes: ["Projects", "Testimonials", "Messages", "Leads", "Users"],
+  tagTypes: ["Projects", "Testimonials", "Messages", "Leads", "Users", "Tickets"],
   endpoints: (builder) => ({
     // Projects
     getProjects: builder.query<Project[], void>({
@@ -70,10 +96,24 @@ export const apiSlice = createApi({
         try {
           const projectsQuery = query(collection(db, "projects"), orderBy("createdAt", "desc"));
           const querySnapshot = await getDocs(projectsQuery);
-          const projects = querySnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-          })) as Project[];
+          const projects = querySnapshot.docs.map(serializeData) as Project[];
+          return { data: projects };
+        } catch (error: any) {
+          return { error: error.message };
+        }
+      },
+      providesTags: ["Projects"],
+    }),
+    getClientProjects: builder.query<Project[], string>({
+      async queryFn(clientId) {
+        try {
+          const projectsQuery = query(
+            collection(db, "projects"), 
+            where("clientId", "==", clientId),
+            orderBy("createdAt", "desc")
+          );
+          const querySnapshot = await getDocs(projectsQuery);
+          const projects = querySnapshot.docs.map(serializeData) as Project[];
           return { data: projects };
         } catch (error: any) {
           return { error: error.message };
@@ -129,7 +169,7 @@ export const apiSlice = createApi({
         try {
           const q = query(collection(db, "testimonials"), orderBy("createdAt", "desc"));
           const querySnapshot = await getDocs(q);
-          const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Testimonial[];
+          const data = querySnapshot.docs.map(serializeData) as Testimonial[];
           return { data };
         } catch (error: any) {
           return { error: error.message };
@@ -184,10 +224,7 @@ export const apiSlice = createApi({
         try {
           const messagesQuery = query(collection(db, "messages"), orderBy("createdAt", "desc"));
           const querySnapshot = await getDocs(messagesQuery);
-          const messages = querySnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-          })) as Message[];
+          const messages = querySnapshot.docs.map(serializeData) as Message[];
           return { data: messages };
         } catch (error: any) {
           return { error: error.message };
@@ -254,13 +291,14 @@ export const apiSlice = createApi({
           const leadsQuery = query(collection(db, "leads"), orderBy("createdAt", "desc"));
           const querySnapshot = await getDocs(leadsQuery);
           const leads = querySnapshot.docs.map(doc => {
-            const data = doc.data();
-            const created = data.createdAt?.toDate?.() || new Date();
+            const data = serializeData(doc);
+            // Format dates/times for consistency with messages UI
+            const created = new Date(data.createdAt);
             return {
-              id: doc.id,
               ...data,
               date: created.toLocaleDateString(),
               time: created.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              // Map to message-like fields for UI compatibility
               subject: `${data.serviceType} Consultation`,
               message: data.projectDetails || "",
               priority: data.budget ? (data.budget.includes("50M") ? "High" : "Medium") : "Low",
@@ -306,10 +344,7 @@ export const apiSlice = createApi({
       async queryFn() {
         try {
           const querySnapshot = await getDocs(collection(db, "users"));
-          const users = querySnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-          }));
+          const users = querySnapshot.docs.map(serializeData);
           return { data: users };
         } catch (error: any) {
           return { error: error.message };
@@ -328,11 +363,47 @@ export const apiSlice = createApi({
       },
       invalidatesTags: ["Users"]
     }),
+
+    // Tickets
+    getSupportTickets: builder.query<Ticket[], string>({
+      async queryFn(clientId) {
+        try {
+          const ticketsQuery = query(
+            collection(db, "tickets"), 
+            where("clientId", "==", clientId),
+            orderBy("createdAt", "desc")
+          );
+          const querySnapshot = await getDocs(ticketsQuery);
+          const tickets = querySnapshot.docs.map(serializeData) as Ticket[];
+          return { data: tickets };
+        } catch (error: any) {
+          return { error: error.message };
+        }
+      },
+      providesTags: ["Tickets"]
+    }),
+    addSupportTicket: builder.mutation<void, Partial<Ticket>>({
+      async queryFn(ticket) {
+        try {
+          await addDoc(collection(db, "tickets"), {
+            ...ticket,
+            status: "Open",
+            priority: ticket.priority || "Medium",
+            createdAt: serverTimestamp()
+          });
+          return { data: undefined };
+        } catch (error: any) {
+          return { error: error.message };
+        }
+      },
+      invalidatesTags: ["Tickets"]
+    }),
   }),
 });
 
 export const { 
   useGetProjectsQuery, 
+  useGetClientProjectsQuery,
   useAddProjectMutation,
   useUpdateProjectMutation,
   useDeleteProjectMutation,
@@ -348,5 +419,7 @@ export const {
   useUpdateLeadMutation,
   useDeleteLeadMutation,
   useGetUsersQuery,
-  useUpdateUserRoleMutation
+  useUpdateUserRoleMutation,
+  useGetSupportTicketsQuery,
+  useAddSupportTicketMutation
 } = apiSlice;

@@ -3,23 +3,23 @@ import { Settings, Monitor, Rocket, CheckCircle2 } from "lucide-react";
 const HowItWorks = () => {
   const flows = [
     {
-      title: "Development",
-      description: "From concept to deployment",
-      steps: ["Idea Analysis", "System Building", "Launch & Scale"],
+      title: "Innovation",
+      description: "Custom engineering cycle",
+      steps: ["Requirements Analysis", "System Engineering", "Deployment & Scale"],
       color: "text-primary",
       bg: "bg-primary/5"
     },
     {
-      title: "Support",
-      description: "Continuous care for your systems",
-      steps: ["Health Check", "Proactive Monitor", "Optimize & Improve"],
+      title: "Assurance",
+      description: "Continuous infrastructure care",
+      steps: ["System Health Audit", "Active Monitoring", "Iterative Optimization"],
       color: "text-accent",
       bg: "bg-accent/5"
     },
     {
-      title: "Software",
-      description: "Market-ready digital tools",
-      steps: ["Choose Product", "One-Click Pay", "Ready to Use"],
+      title: "Deployment",
+      description: "Rapid software integration",
+      steps: ["Product Selection", "Instant Provisioning", "Operational Training"],
       color: "text-muted-foreground",
       bg: "bg-muted/5"
     }

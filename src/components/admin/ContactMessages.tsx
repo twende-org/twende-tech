@@ -19,7 +19,84 @@ import {
   Loader2
 } from "lucide-react";
 import { useGetMessagesQuery, useUpdateMessageMutation, useDeleteMessageMutation } from "@/store/apiSlice";
+import { sendLeadResponse } from "@/services/email";
 import { toast } from "sonner";
+
+const ResponseModal = ({ 
+  isOpen, 
+  onClose, 
+  message 
+}: { 
+  isOpen: boolean; 
+  onClose: () => void; 
+  message: any 
+}) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    subject: `Re: ${message?.subject || "General Inquiry"} - Twende Digital`,
+    message: `Dear ${message?.name},\n\nThank you for reaching out to Twende Digital. We have received your message regarding "${message?.subject}" and will get back to you shortly.\n\nBest regards,\nTwende Digital Team`
+  });
+
+  if (!isOpen || !message) return null;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      const result = await sendLeadResponse(
+        message.name,
+        message.email,
+        formData.subject,
+        formData.message
+      );
+      if (result.success) {
+        toast.success(`Reply sent to ${message.email}`);
+        onClose();
+      } else {
+        throw new Error("Failed to send email");
+      }
+    } catch (error) {
+      toast.error("Failed to send reply. Ensure EmailJS keys are configured.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+      <div className="glass-card w-full max-w-xl p-8 rounded-3xl border border-white/10 relative animate-scale-in">
+        <button onClick={onClose} className="absolute top-6 right-6 text-muted-foreground hover:text-foreground">
+          <X className="w-6 h-6" />
+        </button>
+        <h3 className="text-2xl font-black mb-2 text-primary">Reply to Message</h3>
+        <p className="text-sm text-muted-foreground mb-6">Responding to {message.email}</p>
+        
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="text-xs font-bold uppercase text-muted-foreground mb-2 block">Subject</label>
+            <Input 
+              value={formData.subject}
+              onChange={e => setFormData({...formData, subject: e.target.value})}
+              className="bg-white/5 border-white/10" 
+            />
+          </div>
+          <div>
+            <label className="text-xs font-bold uppercase text-muted-foreground mb-2 block">Message Body</label>
+            <Textarea 
+              rows={8}
+              value={formData.message}
+              onChange={e => setFormData({...formData, message: e.target.value})}
+              className="bg-white/5 border-white/10 resize-none" 
+            />
+          </div>
+          <Button type="submit" variant="hero" className="w-full h-12 gap-2" disabled={isSubmitting}>
+            {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Reply className="w-4 h-4" /> Send Reply</>}
+          </Button>
+        </form>
+      </div>
+    </div>
+  );
+};
 
 export function ContactMessages() {
   const { data: messages, isLoading } = useGetMessagesQuery();
@@ -27,6 +104,7 @@ export function ContactMessages() {
   const [deleteMessage] = useDeleteMessageMutation();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedMessage, setSelectedMessage] = useState<string | null>(null);
+  const [isResponseModalOpen, setIsResponseModalOpen] = useState(false);
 
   const handleStatusUpdate = async (id: string, status: string) => {
     try {
@@ -104,8 +182,15 @@ export function ContactMessages() {
     }
   };
 
+  const currentMessage = messages?.find(m => m.id === selectedMessage);
+
   return (
     <div className="space-y-6">
+      <ResponseModal 
+        isOpen={isResponseModalOpen} 
+        onClose={() => setIsResponseModalOpen(false)} 
+        message={currentMessage} 
+      />
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -158,7 +243,7 @@ export function ContactMessages() {
                   <div className="flex items-center gap-3">
                     <Avatar>
                       <AvatarFallback>
-                        {message.name.split(' ').map(n => n[0]).join('')}
+                        {message.name.split(' ').map((n: string) => n[0]).join('')}
                       </AvatarFallback>
                     </Avatar>
                     <div>
@@ -269,11 +354,9 @@ export function ContactMessages() {
                     
                     {/* Actions */}
                     <div className="flex gap-2 pt-4 border-t border-border/50">
-                      <Button className="gap-2" asChild>
-                        <a href={`mailto:${message.email}`}>
-                          <Reply className="h-4 w-4" />
-                          Reply
-                        </a>
+                      <Button className="gap-2" onClick={() => setIsResponseModalOpen(true)}>
+                        <Reply className="h-4 w-4" />
+                        Reply
                       </Button>
                       <Button 
                         variant="outline" 

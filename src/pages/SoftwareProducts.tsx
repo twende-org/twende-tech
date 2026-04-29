@@ -10,64 +10,74 @@ const products = [
   {
     id: "duka",
     name: "Twende Duka",
-    category: "Retail",
+    category: "Retail & Commerce",
     price: "0 TZS",
     rating: 5.0,
     reviews: 120,
     image: dukaImage,
     liveUrl: "https://duka.twendedigital.tech/nyumbani#pricing",
-    features: ["Inventory Tracking", "Shop Visible Online", "POS System", "Multi-store Support"],
+    features: [
+      "Real-time Inventory Management",
+      "Omnichannel Sales Tracking",
+      "Integrated Cloud POS System",
+      "Multi-store Sync & Analytics"
+    ],
     isPopular: true,
     pricingPlans: [
       {
-        name: "Free",
+        name: "Community",
         price: "0 TZS",
-        features: ["1 Shop", "Up to 20 products", "Shop visible online"]
+        features: ["1 Managed Shop", "Up to 50 SKU items", "Public Online Presence"]
       },
       {
-        name: "Small",
-        price: "9,900 TZS/m",
-        features: ["1 Shop", "Up to 50 products", "Shop visible online", "Basic reports"]
+        name: "Professional",
+        price: "9,900 TZS/mo",
+        features: ["1 Managed Shop", "Unlimited SKU items", "Basic Sales Analytics", "Inventory Alerts"]
       },
       {
-        name: "Business",
-        price: "29,900 TZS/m",
-        features: ["5 Shops", "Unlimited products", "10 Staff", "Shops visible online", "Detailed reports", "Priority support"],
+        name: "Business Plus",
+        price: "29,900 TZS/mo",
+        features: ["5 Managed Shops", "Unlimited Staff Roles", "Advanced Financial Reports", "Priority Tech Support"],
         isPopular: true
       },
       {
         name: "Enterprise",
-        price: "79,900 TZS/m",
-        features: ["Unlimited shops", "Unlimited products", "Unlimited staff", "API access", "24/7 Support"]
+        price: "79,900 TZS/mo",
+        features: ["Unlimited Infrastructure", "API Access (Webhooks)", "Custom Branding", "24/7 Dedicated Account Manager"]
       }
     ]
   },
   {
     id: "docs",
     name: "Twende Docs",
-    category: "Education",
+    category: "Professional Services",
     price: "1,000 TZS",
     rating: 4.9,
     reviews: 85,
     image: docsImage,
     liveUrl: "https://docs.twendedigital.tech/pricing",
-    features: ["Instant PDF Generation", "Cloud Auto-Save", "AI Search Optimization", "Professional Templates"],
+    features: [
+      "AI-Powered Document Generation",
+      "Regulatory Compliance Templates",
+      "Encrypted Cloud Archiving",
+      "Automated Legal Workflow"
+    ],
     isNew: true,
     pricingPlans: [
       {
-        name: "Single Boost",
+        name: "Lite",
         price: "1,000 TZS",
-        features: ["1 Credit", "Instant PDF Generation", "Cloud Auto-Save", "AI Search Optimization", "Priority Support"]
+        features: ["1 Standard Credit", "Instant PDF Engine", "Cloud Auto-Save", "AI Search Indexing"]
       },
       {
-        name: "Basic Bundle",
+        name: "Bundle",
         price: "5,000 TZS",
-        features: ["10 Credits", "Instant PDF Generation", "Cloud Auto-Save", "AI Search Optimization", "Priority Support"]
+        features: ["10 Standard Credits", "Premium Template Library", "Bulk Export Capability", "Priority Rendering"]
       },
       {
         name: "Agent Pro",
         price: "10,000 TZS",
-        features: ["25 Credits", "Instant PDF Generation", "Cloud Auto-Save", "AI Search Optimization", "Priority Support"],
+        features: ["25 Premium Credits", "Custom Firm Letterheads", "Team Collaboration Tools", "White-label Output"],
         isPopular: true
       }
     ]
@@ -76,7 +86,7 @@ const products = [
 
 const SoftwareProducts = () => {
   const [activeCategory, setActiveCategory] = useState("All");
-  const categories = ["All", "Education", "Retail", "Healthcare", "Finance", "Hospitality"];
+  const categories = ["Education", "Retail", "Healthcare", "Finance", "Hospitality"];
 
   const filteredProducts = activeCategory === "All" 
     ? products 
@@ -85,41 +95,56 @@ const SoftwareProducts = () => {
   return (
     <section className="py-32 px-4">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-16 animate-slide-up">
-          <h1 className="text-5xl md:text-7xl font-black mb-6">Software <span className="gradient-text">Marketplace</span></h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">Ready-to-use software for your business. Skip the development time and launch today with our professional white-label products.</p>
+        {/* Header Section */}
+        <div className="text-center mb-8 md:mb-16 animate-slide-up">
+          <h1 className="text-4xl md:text-7xl font-black mb-4 md:mb-6 tracking-tight">
+            Software <span className="text-primary-glow">Marketplace</span>
+          </h1>
+          <p className="text-muted-foreground text-sm md:text-xl max-w-2xl mx-auto leading-relaxed px-4">
+            Ready-to-use software for your business. Skip the development time and launch today with our professional white-label products.
+          </p>
         </div>
 
-        {/* Toolbar */}
-        <div className="flex flex-col lg:flex-row gap-6 mb-12 animate-slide-up" style={{ animationDelay: '0.1s' }}>
-          <div className="relative flex-grow">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-            <Input 
-              className="pl-12 py-6 bg-white/5 border-white/10 rounded-xl focus:ring-primary" 
-              placeholder="Search software systems..." 
-            />
-          </div>
-          <div className="flex gap-2 overflow-x-auto pb-2 lg:pb-0 scrollbar-hide">
-            {categories.map((cat) => (
-              <Button
-                key={cat}
-                variant={activeCategory === cat ? "secondary" : "ghost"}
-                className={`rounded-full px-6 ${activeCategory === cat ? "bg-primary text-white" : "border border-white/5"}`}
-                onClick={() => setActiveCategory(cat)}
+        {/* Filter Section */}
+        <div className="glass-card p-4 md:p-6 rounded-2xl md:rounded-3xl mb-8 md:mb-12 border border-white/5 shadow-2xl">
+          <div className="flex flex-col md:flex-row gap-4 md:items-center justify-between">
+            <div className="relative flex-grow max-w-full md:max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input 
+                placeholder="Search software systems..." 
+                className="pl-10 bg-bg-elevated border-white/5 focus:border-primary/50 transition-all text-sm h-10 md:h-12"
+              />
+            </div>
+            
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
+              <Button 
+                variant={activeCategory === "All" ? "default" : "secondary"} 
+                onClick={() => setActiveCategory("All")}
+                className="rounded-full px-4 md:px-6 h-8 md:h-10 text-xs md:text-sm whitespace-nowrap"
               >
-                {cat}
+                All
               </Button>
-            ))}
-          </div>
-          <div className="flex gap-2 border-l border-white/10 pl-6">
-            <Button variant="ghost" size="icon" className="rounded-lg bg-white/5"><Grid className="w-5 h-5" /></Button>
-            <Button variant="ghost" size="icon" className="rounded-lg"><ListIcon className="w-5 h-5" /></Button>
+              {categories.map((cat) => (
+                <Button 
+                  key={cat}
+                  variant={activeCategory === cat ? "default" : "secondary"} 
+                  onClick={() => setActiveCategory(cat)}
+                  className="rounded-full px-4 md:px-6 h-8 md:h-10 text-xs md:text-sm whitespace-nowrap"
+                >
+                  {cat}
+                </Button>
+              ))}
+            </div>
+
+            <div className="hidden md:flex items-center gap-2 border-l border-white/10 pl-4">
+              <Button variant="ghost" size="icon" className="text-primary"><Grid className="w-5 h-5" /></Button>
+              <Button variant="ghost" size="icon"><ListIcon className="w-5 h-5" /></Button>
+            </div>
           </div>
         </div>
 
-        {/* Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+        {/* Products Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 md:gap-10">
           {filteredProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

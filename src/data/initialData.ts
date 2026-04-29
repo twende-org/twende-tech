@@ -1,107 +1,103 @@
-export const initialProjects = [
+import { Project } from "@/store/apiSlice";
+
+export const initialProjects: Project[] = [
   {
-    id: "static-1",
-    title: "Twende Docs",
-    description: "Professional document creation platform designed to save you time and help you present yourself effectively",
+    id: "legal-ai",
+    title: "Enterprise Legal Intelligence",
+    category: "Enterprise Innovation",
+    image: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=800",
+    description: "Architecting a high-performance legal analysis engine that automates document discovery using advanced NLP and private cloud architecture.",
+    challenge: "Law firms were spending 40% of their billable hours on manual document review, leading to burnout and human error in critical cases.",
+    solution: "We engineered a proprietary legal-LLM wrapper with RAG (Retrieval-Augmented Generation) hosted on a secure, local Kubernetes cluster to ensure total data sovereignty.",
+    tech: ["React", "Python", "Kubernetes", "Redis", "VectorDB"],
+    results: [
+      "75% Reduction in review time",
+      "Enterprise-grade security (SOC2 compliant)",
+      "Processed 1M+ documents in 4 weeks"
+    ],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    status: "Completed"
+  },
+  {
+    id: "twende-docs",
+    title: "Twende Docs Platform",
+    category: "Verified Marketplace",
     image: "/assets/portfolio/twendedocs.png",
-    tech: ["React Typescript", "Django", "Azam Pesa", "PostgreSQL"],
-    category: "E-Document",
-    liveUrl: "https://docs.twendedigital.tech",
-    githubUrl: "https://github.com/FineDR/document_project",
-    challenge: "Many professionals in Tanzania struggled with creating standardized, high-quality documents quickly. Manual formatting was prone to errors and time-consuming.",
-    solution: "We built an automated document generation engine with pre-vetted templates and a seamless payment integration via Azam Pesa.",
-    results: ["90% faster document generation", "Over 1,000 active users in the first month", "Zero payment processing errors"]
+    description: "A specialized e-document engine designed for the Tanzanian market, automating legal and professional document creation.",
+    challenge: "Professionals in Tanzania lacked accessible tools to generate legally sound documents quickly, often relying on expensive manual drafting.",
+    solution: "We built a high-availability web platform with integrated Azam Pesa payments and dynamic PDF generation optimized for local legal standards.",
+    tech: ["React", "Django", "PostgreSQL", "Azam Pesa"],
+    results: [
+      "90% Faster document generation",
+      "1,000+ Active users in Month 1",
+      "Seamless mobile payment integration"
+    ],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    status: "Completed"
   },
   {
-    id: "static-2",
-    title: "Tulete App",
-    description: "Tulete is your one-stop app for anything you need. Order food, shop for anything, anytime, anywhere, and enjoy convenient laundry services.",
+    id: "tulete-app",
+    title: "Tulete Super-App",
+    category: "Managed Tech Services",
     image: "/assets/portfolio/tuleteApp.webp",
-    tech: ["Flutter", "Firebase", "Google Maps", "Push Notifications"],
-    category: "Mobile App",
-    liveUrl: "https://tulete.page.link/3Ds",
-    githubUrl: "https://github.com/mushi2/Tulete-Client-New/tree/master",
-    challenge: "Fragmented local services in Dodoma made it difficult for residents to find reliable delivery and laundry options in one place.",
-    solution: "A cross-platform mobile app gathering vetted vendors into a single ecosystem with real-time tracking and push notifications.",
-    results: ["15% increase in local vendor revenue", "Average delivery time reduced to 25 mins", "4.8/5 star rating on stores"]
+    description: "A comprehensive hyperlocal service ecosystem providing food delivery, shopping, and laundry services in one unified mobile interface.",
+    challenge: "Fragmented service delivery in regional cities caused massive logistical headaches for both vendors and customers.",
+    solution: "We engineered a cross-platform Flutter application with real-time GPS tracking and a centralized vendor management dashboard.",
+    tech: ["Flutter", "Firebase", "Google Maps", "Cloud Functions"],
+    results: [
+      "15% Increase in vendor revenue",
+      "25 Min average delivery time",
+      "4.8/5 Average app store rating"
+    ],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    status: "Completed"
   },
   {
-    id: "static-3",
-    title: "Tulete Web",
-    description: "Tulete connects you to the best vetted restaurants, vetted convenient shopping stores, and laundry services all through one powerful mobile app.",
-    image: "/assets/portfolio/tuleteweb.png",
-    tech: ["React Typescript", "Tailwind CSS"],
-    category: "Web App",
-    liveUrl: "https://tulete.onrender.com",
-    githubUrl: "https://github.com/MushiVerse/tulete-dodoma-web",
-    challenge: "Vendors needed a way to manage inventory and orders from a larger screen, while customers wanted a desktop option for browsing.",
-    solution: "A responsive web companion for the Tulete ecosystem, optimized for both vendor management and customer browsing.",
-    results: ["Enabled 24/7 order management for vendors", "Reduced order processing time by 30%", "Improved SEO visibility for partnered restaurants"]
-  },
-  {
-    id: "static-4",
-    title: "Twende Digital Website",
-    description: "Professional software development by skilled Tanzanian developers. We create exceptional solutions for international clients.",
-    image: "/assets/portfolio/twendedigital.png",
-    tech: ["React Typescript", "Tailwind CSS"],
-    category: "Website",
-    liveUrl: "https://twendedigital.tech",
-    githubUrl: "https://github.com/twende-org/twende-tech/",
-    challenge: "Global clients often perceive a 'trust gap' with remote development teams. We needed a premium digital home that reflects our standards.",
-    solution: "A high-performance, aesthetically stunning website featuring modern animations, dark mode, and detailed case studies.",
-    results: ["200% increase in inbound inquiries", "Improved brand perception among EU/US clients", "Lighthouse accessibility score of 100"]
-  },
-  {
-    id: "static-5",
-    title: "Twende Admin",
-    description: "The Twende Digital Website Portal",
-    image: "/assets/portfolio/twendeAdmin.png",
-    tech: ["React Typescript", "Express JS", "Tailwind CSS"],
-    category: "Web System",
-    liveUrl: "https://twendedigital.tech/admin",
-    githubUrl: "https://github.com/twende-org/twende-tech/",
-    challenge: "Managing static content and client inquiries via raw database access was slow and risky.",
-    solution: "A robust admin portal with real-time Firestore integration, secure authentication, and a custom content management system.",
-    results: ["Content updates reduced from 2 hours to 5 minutes", "Centralized message management", "Enhanced data security via Firebase Auth"]
-  },
-  {
-    id: "static-6",
-    title: "Twende Duka",
-    description: "The System For Shops and Adivertising Products",
-    image: "/assets/portfolio/dashboard_real_1774592847866.png",
-    tech: ["React Typescript", "firebase", "Tailwind CSS", "Google Maps","redux","redux-toolkit"],
-    category: "Cross Platform",
-    liveUrl: "https://duka.twendedigital.tech/",
-    githubUrl: "https://github.com/twende-org/twende-tech/biashara-connect-4c1472b1",
-    challenge: "Small shop owners in Tanzania lacks a simple way to track inventory and advertise to nearby customers.",
-    solution: "A unified system that combines POS inventory tracking with a location-based advertising network.",
-    results: ["Helped 50+ shops digitize inventory", "Increased local discovery by 40%", "Real-time stock alerts for owners"]
+    id: "duka-pos",
+    title: "Verified Marketplace Engine",
+    category: "Verified Marketplace",
+    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&q=80&w=800",
+    description: "A resilient multi-tenant retail platform designed for rapid deployment and seamless inventory synchronization across 500+ locations.",
+    challenge: "Existing POS systems in the region were fragile, losing critical sales data during frequent internet outages.",
+    solution: "Implemented an offline-first architecture using PWA technology and background sync workers, ensuring zero data loss regardless of connectivity.",
+    tech: ["React", "TypeScript", "Node.js", "PWA", "Firebase"],
+    results: [
+      "100% Data integrity in offline mode",
+      "50% Faster checkout performance",
+      "Scaled to 10k daily transactions"
+    ],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    status: "Completed"
   }
 ];
 
 export const initialTestimonials = [
   {
-    id: "static-t1",
-    name: "Baraka Mallya",
-    company: "Kilimanjaro Coffee Co.",
-    position: "Operations Manager",
-    content: "Habari! Twende Digital transformed our supply chain tracking with a custom solution that actually works for our local context. Safi sana!",
+    id: "t1",
+    name: "Dr. Maria Kamau",
+    company: "Kamau & Associates Legal",
+    position: "Managing Partner",
+    content: "The AI Legal Intelligence system transformed our practice. What used to take our juniors weeks now takes minutes, with zero compromise on accuracy.",
     rating: 5,
-    status: "Approved",
-    avatar: "/assets/avatars/alex-mwenda.webp",
-    email: "mallya.baraka@kilicoffee.co.tz",
-    date: "March 2024"
+    status: "active",
+    avatar: "https://i.pravatar.cc/150?u=maria",
+    date: "April 2026",
+    createdAt: new Date()
   },
   {
-    id: "static-t2",
-    name: "Neema Kavishe",
-    company: "Zanzibar Exports",
-    position: "Founder",
-    content: "The mobile app they built for us has seen fantastic user engagement from our clients across East Africa. This team is very reliable. Asante sana!",
+    id: "t2",
+    name: "John Mwangi",
+    company: "Global Logistics Ltd",
+    position: "Operations Director",
+    content: "Twende Digital's Managed Tech Services gave us the visibility we've been missing for a decade. Our fleet efficiency is at an all-time high.",
     rating: 5,
-    status: "Approved",
-    avatar: "/assets/avatars/grace-kileo.webp",
-    email: "neema.k@zanex.co.tz",
-    date: "February 2024"
+    status: "active",
+    avatar: "https://i.pravatar.cc/150?u=john",
+    date: "March 2026",
+    createdAt: new Date()
   }
 ];

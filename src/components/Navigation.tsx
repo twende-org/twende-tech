@@ -19,9 +19,13 @@ const navItems: NavItem[] = [
   { name: "Contact", to: "/#contact" },
 ];
 
+import { useAuth } from "@/context/AuthContext";
+
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { user, role } = useAuth();
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,6 +34,9 @@ const Navigation = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const portalPath = role === 'admin' ? '/admin' : '/dashboard';
+  const portalLabel = user ? 'Dashboard' : 'Portal';
 
   return (
     <nav
@@ -58,16 +65,23 @@ const Navigation = () => {
                 smooth
                 to={item.to}
                 scroll={(el) => window.scrollTo({ top: el.offsetTop - 80, behavior: 'smooth' })}
-                className="text-foreground hover:text-primary transition-colors font-medium"
+                className="text-foreground hover:text-primary transition-colors font-medium text-sm"
               >
                 {item.name}
               </HashLink>
             ))}
-            <HashLink smooth to="/#contact">
-              <Button variant="hero" size="sm">
-                Get Started
-              </Button>
-            </HashLink>
+            <div className="flex items-center gap-3">
+              <Link to={user ? portalPath : "/login"}>
+                <Button variant="outline" size="sm" className="border-primary/20 hover:bg-primary/5 text-xs font-bold px-5">
+                  {portalLabel}
+                </Button>
+              </Link>
+              <HashLink smooth to="/#contact">
+                <Button variant="hero" size="sm" className="text-xs font-bold px-6">
+                  Get Started
+                </Button>
+              </HashLink>
+            </div>
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -98,7 +112,12 @@ const Navigation = () => {
                   {item.name}
                 </HashLink>
               ))}
-              <div className="pt-2">
+              <div className="pt-2 flex flex-col gap-2">
+                <Link to={user ? portalPath : "/login"} onClick={() => setIsOpen(false)}>
+                  <Button variant="outline" size="sm" className="w-full">
+                    {portalLabel} Access
+                  </Button>
+                </Link>
                 <HashLink smooth to="/#contact" onClick={() => setIsOpen(false)}>
                   <Button variant="hero" size="sm" className="w-full">
                     Get Started

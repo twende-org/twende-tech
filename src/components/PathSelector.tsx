@@ -7,30 +7,30 @@ const PathSelector = () => {
 
   const paths = [
     {
-      title: "Custom Development",
+      title: "Enterprise Innovation",
       icon: Rocket,
-      description: "We design and build complete systems from scratch. Web, mobile, and enterprise solutions.",
-      cta: "Start a Project",
+      description: "Engineering bespoke, high-performance systems from the ground up. Scalable web, mobile, and cloud solutions.",
+      cta: "Consult an Architect",
       color: "border-path-dev",
       hoverGlow: "group-hover:shadow-[0_0_30px_-5px_rgba(59,130,246,0.3)]",
       onClick: () => navigate("/services?type=dev"),
       path: "dev"
     },
     {
-      title: "Support & Maintenance",
+      title: "Managed Tech Services",
       icon: Shield,
-      description: "On-demand tech team for your existing systems. Security, updates, and 24/7 support.",
-      cta: "View Plans",
+      description: "Dedicated 24/7 technical oversight for your existing infrastructure. Security, optimization, and proactive support.",
+      cta: "Explore Plans",
       color: "border-path-support",
       hoverGlow: "group-hover:shadow-[0_0_30px_-5px_rgba(16,185,129,0.3)]",
       onClick: () => navigate("/pricing?tab=support"),
       path: "support"
     },
     {
-      title: "Software Marketplace",
+      title: "Verified Marketplace",
       icon: Package,
-      description: "Ready-to-use business software. School systems, retail, clinics, and more. Launch today.",
-      cta: "Browse Software",
+      description: "Industry-proven, ready-to-deploy software solutions. Zero-setup enterprise platforms for retail and professional services.",
+      cta: "Enter Marketplace",
       color: "border-path-product",
       hoverGlow: "group-hover:shadow-[0_0_30px_-5px_rgba(148,163,184,0.3)]",
       onClick: () => navigate("/products"),

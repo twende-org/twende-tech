@@ -15,7 +15,7 @@ import {
   ExternalLink,
   Loader2
 } from "lucide-react";
-import { useGetProjectsQuery, useAddProjectMutation, useUpdateProjectMutation, useDeleteProjectMutation, Project } from "@/store/apiSlice";
+import { useGetProjectsQuery, useAddProjectMutation, useUpdateProjectMutation, useDeleteProjectMutation, Project, useGetUsersQuery } from "@/store/apiSlice";
 import { toast } from "sonner";
 import { uploadFile } from "@/lib/storage";
 
@@ -25,6 +25,7 @@ export function ProjectsManager() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const { data: projects, isLoading } = useGetProjectsQuery();
+  const { data: users } = useGetUsersQuery();
   const [addProject, { isLoading: isAdding }] = useAddProjectMutation();
   const [updateProject, { isLoading: isUpdating }] = useUpdateProjectMutation();
   const [deleteProject] = useDeleteProjectMutation();
@@ -37,7 +38,11 @@ export function ProjectsManager() {
     status: "Live",
     liveUrl: "",
     githubUrl: "",
-    category: "Web App"
+    category: "Enterprise Innovation",
+    challenge: "",
+    solution: "",
+    results: "",
+    clientId: ""
   });
 
   const resetForm = () => {
@@ -48,7 +53,11 @@ export function ProjectsManager() {
       status: "Live",
       liveUrl: "",
       githubUrl: "",
-      category: "Web App"
+      category: "Enterprise Innovation",
+      challenge: "",
+      solution: "",
+      results: "",
+      clientId: ""
     });
     setEditingProject(null);
     setShowForm(false);
@@ -63,7 +72,11 @@ export function ProjectsManager() {
       status: project.status,
       liveUrl: project.liveUrl || "",
       githubUrl: project.githubUrl || "",
-      category: project.category || "Web App"
+      category: project.category || "Enterprise Innovation",
+      challenge: project.challenge || "",
+      solution: project.solution || "",
+      results: Array.isArray(project.results) ? project.results.join(", ") : project.results || "",
+      clientId: project.clientId || ""
     });
     setShowForm(true);
   };
@@ -82,7 +95,8 @@ export function ProjectsManager() {
       const projectData = {
         ...formData,
         image: imageUrl,
-        tech: formData.tech.split(",").map(t => t.trim()).filter(Boolean)
+        tech: formData.tech.split(",").map(t => t.trim()).filter(Boolean),
+        results: formData.results.split(",").map(r => r.trim()).filter(Boolean)
       };
 
       if (editingProject) {
@@ -129,26 +143,97 @@ export function ProjectsManager() {
   const AddProjectForm = () => (
     <Card className="glass-card border-border/50 mb-6">
       <CardHeader>
-        <CardTitle>{editingProject ? "Edit Project" : "Add New Project"}</CardTitle>
+        <CardTitle>{editingProject ? "Edit Project Case Study" : "Add New Case Study"}</CardTitle>
         <CardDescription>
-          {editingProject ? "Update the existing entry" : "Create a new portfolio project entry"}
+          {editingProject ? "Update the technical details and results" : "Create a new high-authority portfolio entry"}
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label htmlFor="title">Project Title</Label>
               <Input 
                 id="title" 
                 value={formData.title}
                 onChange={(e) => setFormData({...formData, title: e.target.value})}
-                placeholder="Enter project title" 
+                placeholder="e.g., Enterprise AI Suite" 
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="status">Status</Label>
+              <Label htmlFor="category">Category</Label>
+              <select 
+                id="category"
+                value={formData.category}
+                onChange={(e) => setFormData({...formData, category: e.target.value})}
+                className="w-full px-3 py-2 rounded-md border border-border bg-background"
+              >
+                <option>Enterprise Innovation</option>
+                <option>Managed Tech Services</option>
+                <option>Verified Marketplace</option>
+              </select>
+            </div>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="description">Executive Summary</Label>
+            <Textarea 
+              id="description" 
+              value={formData.description}
+              onChange={(e) => setFormData({...formData, description: e.target.value})}
+              placeholder="High-level overview of the project" 
+              required
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label htmlFor="challenge">The Challenge</Label>
+              <Textarea 
+                id="challenge" 
+                value={formData.challenge}
+                onChange={(e) => setFormData({...formData, challenge: e.target.value})}
+                placeholder="What problem were we solving?" 
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="solution">Engineering Solution</Label>
+              <Textarea 
+                id="solution" 
+                value={formData.solution}
+                onChange={(e) => setFormData({...formData, solution: e.target.value})}
+                placeholder="How did we build it?" 
+                required
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="results">Key Results (comma separated)</Label>
+            <Input 
+              id="results" 
+              value={formData.results}
+              onChange={(e) => setFormData({...formData, results: e.target.value})}
+              placeholder="99% Uptime, 50% faster checkout, Processed 1M records" 
+              required
+            />
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label htmlFor="tech">Technologies (comma separated)</Label>
+              <Input 
+                id="tech" 
+                value={formData.tech}
+                onChange={(e) => setFormData({...formData, tech: e.target.value})}
+                placeholder="React, Python, AWS, Docker" 
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="status">Project Status</Label>
               <select 
                 id="status"
                 value={formData.status}
@@ -161,21 +246,28 @@ export function ProjectsManager() {
               </select>
             </div>
           </div>
-          
+
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
-            <Textarea 
-              id="description" 
-              value={formData.description}
-              onChange={(e) => setFormData({...formData, description: e.target.value})}
-              placeholder="Project description" 
-              required
-            />
+            <Label htmlFor="clientId">Assign to Client (Portal Access)</Label>
+            <select 
+              id="clientId"
+              value={formData.clientId}
+              onChange={(e) => setFormData({...formData, clientId: e.target.value})}
+              className="w-full px-3 py-2 rounded-md border border-border bg-background"
+            >
+              <option value="">No Client Assigned (Public Only)</option>
+              {users?.filter(u => u.role === 'client').map(user => (
+                <option key={user.id} value={user.id}>
+                  {user.email} ({user.email?.split('@')[0]})
+                </option>
+              ))}
+            </select>
+            <p className="text-[10px] text-muted-foreground">Assigning a client allows them to track this project in their private dashboard.</p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="image">Project Image</Label>
+              <Label htmlFor="image">Hero Image</Label>
               <Input 
                 id="image" 
                 type="file"
@@ -192,13 +284,22 @@ export function ProjectsManager() {
                 placeholder="https://example.com" 
               />
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="githubUrl">GitHub URL (optional)</Label>
+              <Input 
+                id="githubUrl" 
+                value={formData.githubUrl}
+                onChange={(e) => setFormData({...formData, githubUrl: e.target.value})}
+                placeholder="https://github.com/..." 
+              />
+            </div>
           </div>
           
-          <div className="flex gap-2">
-            <Button disabled={isAdding || isUpdating}>
-              {editingProject ? "Update Project" : "Save Project"}
+          <div className="flex gap-2 pt-4">
+            <Button disabled={isAdding || isUpdating} className="h-12 px-8">
+              {editingProject ? "Update Case Study" : "Publish Case Study"}
             </Button>
-            <Button variant="outline" type="button" onClick={resetForm}>
+            <Button variant="outline" type="button" onClick={resetForm} className="h-12 px-8">
               Cancel
             </Button>
           </div>

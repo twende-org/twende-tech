@@ -1,40 +1,23 @@
-import { useState, useEffect } from "react";
-import { AdminLogin } from "@/components/admin/AdminLogin";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { useAuth } from "@/context/AuthContext";
 import { Loader2 } from "lucide-react";
 
 export default function Admin() {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const { role, logout, loading } = useAuth();
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setIsAuthenticated(!!user);
-    });
-    return () => unsubscribe();
-  }, []);
-
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      setIsAuthenticated(false);
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
-  };
-
-  if (isAuthenticated === null) {
+  if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
 
-  if (!isAuthenticated) {
-    return <AdminLogin onLogin={() => setIsAuthenticated(true)} />;
+  // The ProtectedRoute handles the actual auth check, 
+  // but we keep this here for internal safety
+  if (role !== "admin") {
+    return null;
   }
 
-  return <AdminDashboard onLogout={handleLogout} />;
+  return <AdminDashboard onLogout={logout} />;
 }

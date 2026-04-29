@@ -27,6 +27,7 @@ export interface Project {
   results?: string[];
   createdAt: any;
   updatedAt: any;
+  clientId?: string; // Link to a client user
 }
 
 export interface Testimonial {
@@ -61,7 +62,7 @@ export interface Message {
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fakeBaseQuery(),
-  tagTypes: ["Projects", "Testimonials", "Messages"],
+  tagTypes: ["Projects", "Testimonials", "Messages", "Leads", "Users"],
   endpoints: (builder) => ({
     // Projects
     getProjects: builder.query<Project[], void>({
@@ -245,6 +246,88 @@ export const apiSlice = createApi({
       },
       invalidatesTags: ["Messages"],
     }),
+
+    // Leads
+    getLeads: builder.query<any[], void>({
+      async queryFn() {
+        try {
+          const leadsQuery = query(collection(db, "leads"), orderBy("createdAt", "desc"));
+          const querySnapshot = await getDocs(leadsQuery);
+          const leads = querySnapshot.docs.map(doc => {
+            const data = doc.data();
+            const created = data.createdAt?.toDate?.() || new Date();
+            return {
+              id: doc.id,
+              ...data,
+              date: created.toLocaleDateString(),
+              time: created.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              subject: `${data.serviceType} Consultation`,
+              message: data.projectDetails || "",
+              priority: data.budget ? (data.budget.includes("50M") ? "High" : "Medium") : "Low",
+              status: data.status || "New"
+            };
+          });
+          return { data: leads };
+        } catch (error: any) {
+          return { error: error.message };
+        }
+      },
+      providesTags: ["Leads"],
+    }),
+    updateLead: builder.mutation<void, { id: string; [key: string]: any }>({
+      async queryFn({ id, ...updates }) {
+        try {
+          const docRef = doc(db, "leads", id);
+          await updateDoc(docRef, {
+            ...updates,
+            updatedAt: serverTimestamp(),
+          });
+          return { data: undefined };
+        } catch (error: any) {
+          return { error: error.message };
+        }
+      },
+      invalidatesTags: ["Leads"],
+    }),
+    deleteLead: builder.mutation<void, string>({
+      async queryFn(id) {
+        try {
+          await deleteDoc(doc(db, "leads", id));
+          return { data: undefined };
+        } catch (error: any) {
+          return { error: error.message };
+        }
+      },
+      invalidatesTags: ["Leads"],
+    }),
+
+    // Users
+    getUsers: builder.query<any[], void>({
+      async queryFn() {
+        try {
+          const querySnapshot = await getDocs(collection(db, "users"));
+          const users = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+          return { data: users };
+        } catch (error: any) {
+          return { error: error.message };
+        }
+      },
+      providesTags: ["Users"]
+    }),
+    updateUserRole: builder.mutation<void, { id: string, role: string }>({
+      async queryFn({ id, role }) {
+        try {
+          await updateDoc(doc(db, "users", id), { role });
+          return { data: undefined };
+        } catch (error: any) {
+          return { error: error.message };
+        }
+      },
+      invalidatesTags: ["Users"]
+    }),
   }),
 });
 
@@ -260,5 +343,10 @@ export const {
   useGetMessagesQuery, 
   useAddMessageMutation,
   useUpdateMessageMutation,
-  useDeleteMessageMutation
+  useDeleteMessageMutation,
+  useGetLeadsQuery,
+  useUpdateLeadMutation,
+  useDeleteLeadMutation,
+  useGetUsersQuery,
+  useUpdateUserRoleMutation
 } = apiSlice;

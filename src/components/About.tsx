@@ -37,41 +37,39 @@ const About = () => {
           {/* Section Header */}
           <div className="text-center mb-16 animate-slide-up">
             <h2 className="text-5xl md:text-6xl font-black mb-6">
-              About <span className="gradient-text">Twende</span>
+              About <span className="gradient-text">Twende Digital</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Twende Digital is led by a team of experienced Tanzanian software developers, designers, and IT professionals who build scalable web and mobile applications, custom software, and digital solutions for businesses across Africa.
+              We are a premier pan-African digital engineering firm. Our mission is to accelerate the digital transformation of businesses through high-performance software, managed services, and industry-proven products.
             </p>
           </div>
 
           {/* Mission & Values */}
           <div className="grid md:grid-cols-3 gap-8 mb-20">
-            <div className="glass-card p-8 rounded-xl hover-lift text-center">
-              <Target className="w-12 h-12 text-primary mx-auto mb-4" />
-              <h3 className="text-xl font-bold mb-4">Our Mission</h3>
-              <p className="text-muted-foreground">
-                Empower businesses and organizations in Tanzania and Africa with reliable, affordable, and innovative digital solutions that improve efficiency and growth.
+            <div className="glass-card p-8 rounded-2xl hover-lift text-center border border-white/5">
+              <Target className="w-12 h-12 text-primary mx-auto mb-6" />
+              <h3 className="text-2xl font-bold mb-4 text-foreground">Our Mission</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                To empower African enterprises with world-class digital infrastructure that drives measurable efficiency, scalability, and sustainable growth.
               </p>
             </div>
 
-            <div className="glass-card p-8 rounded-xl hover-lift text-center">
-              <Heart className="w-12 h-12 text-accent mx-auto mb-4" />
-              <h3 className="text-xl font-bold mb-4">Our Values</h3>
-              <ul className="text-muted-foreground list-disc list-inside text-left">
-                <li>Innovation – Continuously improve to meet client needs</li>
-                <li>Reliability – Stable, secure, dependable systems</li>
-                <li>Integrity – Transparent, honest, professional</li>
-                <li>Customer-Centered – Prioritize client needs</li>
-                <li>Quality – High standards in development & design</li>
-                <li>Continuous Improvement – Learn, optimize, stay ahead</li>
+            <div className="glass-card p-8 rounded-2xl hover-lift text-center border border-white/5">
+              <Heart className="w-12 h-12 text-accent mx-auto mb-6" />
+              <h3 className="text-2xl font-bold mb-4 text-foreground">Core Values</h3>
+              <ul className="text-muted-foreground space-y-2 text-left inline-block">
+                <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-accent"></div> Engineering Excellence</li>
+                <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-accent"></div> Radical Transparency</li>
+                <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-accent"></div> Security-First Mindset</li>
+                <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-accent"></div> Iterative Innovation</li>
               </ul>
             </div>
 
-            <div className="glass-card p-8 rounded-xl hover-lift text-center">
-              <MapPin className="w-12 h-12 text-primary-glow mx-auto mb-4" />
-              <h3 className="text-xl font-bold mb-4">Our Location</h3>
-              <p className="text-muted-foreground">
-                Based in Dodoma, Tanzania. Serving schools, clinics, SACCOs, hotels, and businesses locally and globally.
+            <div className="glass-card p-8 rounded-2xl hover-lift text-center border border-white/5">
+              <MapPin className="w-12 h-12 text-primary-glow mx-auto mb-6" />
+              <h3 className="text-2xl font-bold mb-4 text-foreground">Our Presence</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Headquartered in Dodoma, Tanzania. We serve a global portfolio of clients across education, retail, healthcare, and financial services.
               </p>
             </div>
           </div>
@@ -79,35 +77,25 @@ const About = () => {
           <div className="grid md:grid-cols-3 gap-8 mb-20">
             {[
               {
-                title: "On-Demand Software Team",
-                description: "Regular updates, bug fixes, hosting, security, and WhatsApp/email support",
+                title: "Managed Support",
+                description: "Proactive infrastructure oversight, security auditing, and high-priority technical support desk.",
                 icon: Users
               },
               {
-                title: "White-Label Software Products",
-                description: "Ready-made solutions for schools, clinics, SACCOs, hotels, retail businesses",
+                title: "Software Marketplace",
+                description: "Enterprise-ready, verified software products designed for rapid deployment and zero friction.",
                 icon: Target
               },
               {
-                title: "Custom Software Development",
-                description: "Tailored web/mobile apps, API integrations, scalable solutions",
+                title: "Enterprise Engineering",
+                description: "Bespoke digital architecture and development for complex, high-scale business requirements.",
                 icon: MapPin
-              },
-              {
-                title: "IT Support & Maintenance",
-                description: "Cloud hosting management, system monitoring, monthly reports",
-                icon: Heart
-              },
-              {
-                title: "Design & UX Services",
-                description: "Website and app design, dashboard & workflow optimization",
-                icon: Users
               }
             ].map((service) => (
-              <div key={service.title} className="glass-card p-8 rounded-xl hover-lift text-center">
-                <service.icon className="w-12 h-12 text-primary mx-auto mb-4" />
-                <h4 className="text-xl font-bold mb-2">{service.title}</h4>
-                <p className="text-muted-foreground text-sm">{service.description}</p>
+              <div key={service.title} className="glass-card p-8 rounded-2xl hover-lift text-center border border-white/5">
+                <service.icon className="w-10 h-10 text-primary mx-auto mb-6 opacity-80" />
+                <h4 className="text-xl font-bold mb-3 text-foreground">{service.title}</h4>
+                <p className="text-muted-foreground text-sm leading-relaxed">{service.description}</p>
               </div>
             ))}
           </div>

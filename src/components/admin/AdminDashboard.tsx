@@ -1,25 +1,16 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
-  LayoutDashboard, 
-  FolderOpen, 
-  MessageSquare, 
-  Users, 
-  Settings, 
-  LogOut,
-  BarChart3,
-  Mail,
-  Eye,
-  Edit,
-  Trash2,
-  Menu
+  Menu,
+  LogOut
 } from "lucide-react";
 import { AdminSidebar } from "./AdminSidebar";
 import { DashboardOverview } from "./DashboardOverview";
 import { ProjectsManager } from "./ProjectsManager";
 import { TestimonialsManager } from "./TestimonialsManager";  
 import { ContactMessages } from "./ContactMessages";
+import { LeadsManager } from "./LeadsManager";
+import { UserManager } from "./UserManager";
 
 interface AdminDashboardProps {
   onLogout: () => void;
@@ -39,6 +30,10 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
         return <TestimonialsManager />;
       case "messages":
         return <ContactMessages />;
+      case "leads":
+        return <LeadsManager />;
+      case "users":
+        return <UserManager />;
       case "settings":
         return (
           <div className="flex items-center justify-center h-64 border-2 border-dashed border-border/50 rounded-xl">

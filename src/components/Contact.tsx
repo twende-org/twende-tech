@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useAddMessageMutation } from "@/store/apiSlice";
+import { submitLead } from "@/services/leads";
 import { toast } from "sonner";
 
 const Contact = () => {
@@ -16,7 +16,7 @@ const Contact = () => {
     message: "",
   });
 
-  const [addMessage, { isLoading: isSubmitting }] = useAddMessageMutation();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,23 +24,43 @@ const Contact = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.name || !formData.email || !formData.message) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
+
+    setIsSubmitting(true);
     
     try {
-      // Store in Firestore
-      await addMessage(formData).unwrap();
-      
-      toast.success("Message sent successfully ✅");
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        company: "",
-        projectType: "",
-        message: "",
+      const result = await submitLead({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        company: formData.company,
+        serviceType: formData.projectType.includes("Innovation") ? "Innovation" : 
+                     formData.projectType.includes("Services") ? "Assurance" : 
+                     formData.projectType.includes("Marketplace") ? "Deployment" : "Other",
+        projectDetails: formData.message
       });
+      
+      if (result.success) {
+        toast.success("Inquiry submitted successfully! Our team will contact you shortly. ✅");
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          company: "",
+          projectType: "",
+          message: "",
+        });
+      } else {
+        throw new Error("Submission failed");
+      }
     } catch (error: any) {
       console.error("FAILED...", error);
-      toast.error("Failed to send message ❌");
+      toast.error("Failed to submit inquiry. Please try again or contact us via WhatsApp. ❌");
+    } finally {
+      setIsSubmitting(false);
     }
   };
   return (
@@ -93,15 +113,13 @@ const Contact = () => {
                     name="projectType"
                     value={formData.projectType}
                     onChange={handleChange}
-                    className="w-full p-3 rounded-lg bg-muted border border-muted text-foreground"
+                    className="w-full p-3 rounded-lg bg-muted border border-muted text-foreground focus:ring-2 focus:ring-primary/20 outline-none transition-all"
                   >
-                    <option value="">Select Project Type</option>
-                    <option>Web Application</option>
-                    <option>Mobile App</option>
-                    <option>UI/UX Design</option>
-                    <option>Custom Software</option>
-                    <option>Consulting</option>
-                    <option>Other</option>
+                    <option value="">Select Service Area</option>
+                    <option value="Innovation">Enterprise Innovation (Custom Development)</option>
+                    <option value="Services">Managed Tech Services (Support)</option>
+                    <option value="Marketplace">Verified Marketplace (Software Products)</option>
+                    <option value="Other">Other Inquiry</option>
                   </select>
                 </div>
 

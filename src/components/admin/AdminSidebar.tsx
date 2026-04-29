@@ -31,8 +31,9 @@ export function AdminSidebar({ activeTab, onTabChange, onLogout, isOpen, onClose
 
   const mainMenuItems = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { id: "leads", label: "Leads", icon: BarChart3 },
     { id: "messages", label: "Messages", icon: MessageSquare },
-    { id: "analytics", label: "Analytics", icon: BarChart3 },
+    { id: "users", label: "User Portal", icon: Users },
     { id: "settings", label: "Settings", icon: Settings },
   ];
 

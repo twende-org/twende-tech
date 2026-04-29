@@ -14,47 +14,35 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden px-4 pt-20">
-      {/* Background Glow Effects */}
-      <div className="absolute top-[-10%] left-[20%] w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] animate-pulse-glow"></div>
-      <div className="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] bg-accent/10 rounded-full blur-[100px] animate-pulse-glow" style={{ animationDelay: '2s' }}></div>
-
-      <div className="max-w-6xl mx-auto text-center relative z-10 mb-16">
-        {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-8 animate-slide-up">
-          <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-          <span className="text-sm font-medium text-primary-glow">Building the future of African Tech</span>
-        </div>
-
-        {/* Main Heading */}
-        <div className="animate-slide-up" style={{ animationDelay: '0.1s' }}>
-          <h1 className="text-5xl md:text-8xl font-black mb-8 leading-[1.1] tracking-tight">
-            Build. Maintain. <br />
-            <span className="gradient-text">Launch instantly.</span>
+    <section className="relative min-h-screen pt-24 md:pt-32 pb-16 overflow-hidden flex items-center">
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="max-w-4xl mx-auto text-center space-y-6 md:space-y-8">
+          <div className="inline-flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 rounded-full bg-white/5 border border-white/10 text-primary-glow text-[10px] md:text-xs font-bold tracking-wider uppercase animate-fade-in mb-4">
+            <span className="w-1.5 md:w-2 h-1.5 md:h-2 rounded-full bg-primary animate-pulse"></span>
+            Building the future of African Tech
+          </div>
+          
+          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black leading-[1.1] md:leading-tight animate-slide-up">
+            Build. Scale. <br />
+            <span className="text-primary-glow">Innovate faster.</span>
           </h1>
-
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed font-medium">
-            Custom software development, ongoing technical support, and ready-made business software — <span className="text-foreground">all in one place.</span>
+          
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in delay-200 px-4">
+            From custom enterprise solutions to ready-to-deploy software products — we provide the <span className="text-foreground font-bold">engineering excellence</span> your business deserves.
           </p>
-        </div>
 
-        {/* CTA Buttons - 3 Path System */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-slide-up" style={{ animationDelay: '0.2s' }}>
-          <Button variant="hero" size="xl" className="group min-w-[200px]" onClick={() => navigate("/services?type=dev")}>
-            Build a Product
-            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform ml-2" />
-          </Button>
-          <Button 
-            variant="secondary" 
-            size="xl" 
-            className="min-w-[200px] bg-accent hover:bg-accent/90 text-white border-none"
-            onClick={() => navigate("/pricing?tab=support")}
-          >
-            Get Support
-          </Button>
-          <Button variant="outline" size="xl" className="min-w-[200px] border-white/10 hover:bg-white/5" onClick={() => navigate("/products")}>
-            Explore Software
-          </Button>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4 pt-6 md:pt-10 animate-fade-in delay-300">
+            <Button size="lg" className="w-full sm:w-auto h-12 md:h-14 px-8 md:px-10 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-base md:text-lg transition-all hover:scale-105 shadow-xl shadow-primary/20 group" onClick={() => navigate('/services?type=build')}>
+              Start Building
+              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
+            <Button size="lg" variant="secondary" className="w-full sm:w-auto h-12 md:h-14 px-8 md:px-10 rounded-xl bg-accent hover:bg-accent/90 text-white font-bold text-base md:text-lg transition-all hover:scale-105 shadow-xl shadow-accent/10" onClick={() => navigate('/services?type=support')}>
+              Managed Support
+            </Button>
+            <Button size="lg" variant="ghost" className="w-full sm:w-auto h-12 md:h-14 px-8 md:px-10 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 text-foreground font-bold text-base md:text-lg transition-all" onClick={() => navigate('/products')}>
+              Software Marketplace
+            </Button>
+          </div>
         </div>
       </div>
     </section>

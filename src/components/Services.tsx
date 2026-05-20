@@ -136,7 +136,7 @@ const Services = () => {
   ];
 
   return (
-    <section className="py-32 px-4">
+    <section className="pt-36 sm:pt-40 md:pt-48 pb-32 px-4">
       <div className="max-w-6xl mx-auto">
         <InquiryModal 
           isOpen={isInquiryModalOpen} 
@@ -301,7 +301,7 @@ const Services = () => {
         <div className="mt-32 animate-slide-up" style={{ animationDelay: '0.3s' }}>
           <h3 className="text-3xl font-black mb-12 text-center">Path Comparison</h3>
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+            <table className="w-full min-w-[650px] text-left border-collapse">
               <thead>
                 <tr className="border-b border-white/10">
                   <th className="py-6 px-4 font-bold text-muted-foreground uppercase text-xs">Feature</th>

@@ -14,7 +14,8 @@ import {
   Plus,
   Edit,
   Trash2,
-  X
+  X,
+  Shield
 } from "lucide-react";
 import { useState } from "react";
 
@@ -35,6 +36,8 @@ export function AdminSidebar({ activeTab, onTabChange, onLogout, isOpen, onClose
     { id: "leads", label: "Leads", icon: BarChart3 },
     { id: "messages", label: "Messages", icon: MessageSquare },
     { id: "chats", label: "Live Support", icon: MessageSquare },
+    { id: "tickets", label: "Support Tickets", icon: MessageSquare },
+    { id: "audit", label: "Security Logs", icon: Shield },
     { id: "users", label: "User Portal", icon: Users },
     { id: "settings", label: "Settings", icon: Settings },
   ];

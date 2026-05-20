@@ -1,4 +1,4 @@
-import { ShoppingCart, Eye, Star, ShieldCheck, Zap, X, Check, CheckCircle2 } from "lucide-react";
+import { ShoppingCart, Eye, Star, ShieldCheck, Zap, X, Check, CheckCircle2, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
@@ -20,6 +20,7 @@ interface ProductCardProps {
     reviews: number;
     image: string;
     liveUrl?: string;
+    downloadUrl?: string;
     features: string[];
     isNew?: boolean;
     isPopular?: boolean;
@@ -31,7 +32,14 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const [showPricing, setShowPricing] = useState(false);
 
   const handleVisit = () => {
-    if (product.liveUrl) {
+    if (product.downloadUrl) {
+      const link = document.createElement("a");
+      link.href = product.downloadUrl;
+      link.setAttribute("download", "");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else if (product.liveUrl) {
       window.open(product.liveUrl, "_blank");
     }
   };
@@ -64,11 +72,16 @@ const ProductCard = ({ product }: ProductCardProps) => {
               <Eye className="w-4 h-4 mr-2" />
               View Pricing
             </Button>
-            {product.liveUrl && (
+            {product.downloadUrl ? (
+              <Button variant="hero" size="sm" className="rounded-full shadow-xl" onClick={handleVisit}>
+                <Download className="w-4 h-4 mr-2" />
+                Download App
+              </Button>
+            ) : product.liveUrl ? (
               <Button variant="hero" size="sm" className="rounded-full shadow-xl" onClick={handleVisit}>
                 Visit Platform
               </Button>
-            )}
+            ) : null}
           </div>
         </div>
 
@@ -108,8 +121,17 @@ const ProductCard = ({ product }: ProductCardProps) => {
               className="w-full bg-foreground text-background hover:bg-primary hover:text-white transition-all font-bold text-sm md:text-base"
               onClick={handleVisit}
             >
-              <ShoppingCart className="w-4 h-4 mr-2" />
-              {product.pricingPlans ? "Choose Plan" : "Purchase License"}
+              {product.downloadUrl ? (
+                <>
+                  <Download className="w-4 h-4 mr-2" />
+                  Download Installer
+                </>
+              ) : (
+                <>
+                  <ShoppingCart className="w-4 h-4 mr-2" />
+                  {product.pricingPlans ? "Choose Plan" : "Purchase License"}
+                </>
+              )}
             </Button>
           </div>
         </div>

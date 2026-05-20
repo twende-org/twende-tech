@@ -14,28 +14,8 @@ export const sendAdminNotification = async (
     message: string;
   }
 ) => {
-  try {
-    const templateParams = {
-      name: formData.name,
-      email: formData.email,
-      company: formData.company,
-      projectType: formData.projectType,
-      message: formData.message,
-      to_email: "twendedigital3@gmail.com", // Admin recipient
-    };
-
-    const response = await emailjs.send(
-      SERVICE_ID,
-      TEMPLATE_ID,
-      templateParams,
-      PUBLIC_KEY
-    );
-
-    return { success: true, response };
-  } catch (error) {
-    console.error("Admin Email Alert Error:", error);
-    return { success: false, error };
-  }
+  console.log("Simulating Admin Notification (EmailJS Disabled):", formData);
+  return { success: true, mocked: true };
 };
 
 // Notification to User about admin reply/message
@@ -44,27 +24,8 @@ export const sendChatNotification = async (
   toEmail: string,
   chatMessage: string
 ) => {
-  try {
-    const templateParams = {
-      to_name: toName,
-      to_email: toEmail,
-      subject: "New Message from Twende Digital Support",
-      message: `Our engineering team has sent you a new message in the portal: \n\n"${chatMessage}"\n\nPlease log in to the portal to reply.`,
-      from_name: "Twende Digital Support",
-    };
-
-    const response = await emailjs.send(
-      SERVICE_ID,
-      TEMPLATE_ID,
-      templateParams,
-      PUBLIC_KEY
-    );
-
-    return { success: true, response };
-  } catch (error) {
-    console.error("User Notification Error:", error);
-    return { success: false, error };
-  }
+  console.log(`Simulating User Notification to ${toEmail} (EmailJS Disabled):`, chatMessage);
+  return { success: true, mocked: true };
 };
 
 export const sendLeadResponse = async (
@@ -73,27 +34,7 @@ export const sendLeadResponse = async (
   subject: string,
   message: string
 ) => {
-  try {
-    const templateParams = {
-      to_name: toName,
-      to_email: toEmail,
-      subject: subject,
-      message: message,
-      from_name: "Twende Digital Admin",
-      reply_to: "twendedigital3@gmail.com",
-    };
-
-    const response = await emailjs.send(
-      SERVICE_ID,
-      TEMPLATE_ID,
-      templateParams,
-      PUBLIC_KEY
-    );
-
-    return { success: true, response };
-  } catch (error) {
-    console.error("EmailJS Error:", error);
-    return { success: false, error };
-  }
+  console.log(`Simulating Lead Response to ${toEmail} - Subject: ${subject} (EmailJS Disabled):`, message);
+  return { success: true, mocked: true };
 };
 

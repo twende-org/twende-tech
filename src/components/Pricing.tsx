@@ -63,7 +63,7 @@ const Pricing = () => {
   ];
 
   return (
-    <section className="py-24 md:py-32 px-4">
+    <section className="pt-36 sm:pt-40 md:pt-48 pb-24 md:pb-32 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12 md:mb-16 animate-slide-up">

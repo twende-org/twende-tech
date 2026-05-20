@@ -9,7 +9,8 @@ import {
   query, 
   orderBy,
   where,
-  serverTimestamp
+  serverTimestamp,
+  onSnapshot
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
@@ -70,7 +71,6 @@ export interface Ticket {
   createdAt: any;
 }
 
-// Helper to handle non-serializable Firestore data
 const serializeData = (doc: any) => {
   const data = doc.data();
   const serialized: any = { id: doc.id };
@@ -85,10 +85,27 @@ const serializeData = (doc: any) => {
   return serialized;
 };
 
+const formatLead = (doc: any) => {
+  const data = serializeData(doc);
+  let created = new Date();
+  if (data.createdAt) {
+    created = new Date(data.createdAt);
+  }
+  return {
+    ...data,
+    date: created.toLocaleDateString(),
+    time: created.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    subject: `${data.serviceType || "Service"} Consultation`,
+    message: data.projectDetails || "",
+    priority: data.budget ? (data.budget.includes("50M") ? "High" : "Medium") : "Low",
+    status: data.status || "New"
+  };
+};
+
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fakeBaseQuery(),
-  tagTypes: ["Projects", "Testimonials", "Messages", "Leads", "Users", "Tickets"],
+  tagTypes: ["Projects", "Testimonials", "Messages", "Leads", "Users", "Tickets", "PageViews", "AuditLogs"],
   endpoints: (builder) => ({
     // Projects
     getProjects: builder.query<Project[], void>({
@@ -218,7 +235,6 @@ export const apiSlice = createApi({
       invalidatesTags: ["Testimonials"],
     }),
     
-    // Messages
     getMessages: builder.query<Message[], void>({
       async queryFn() {
         try {
@@ -229,6 +245,21 @@ export const apiSlice = createApi({
         } catch (error: any) {
           return { error: error.message };
         }
+      },
+      async onCacheEntryAdded(arg, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) {
+        let unsubscribe = () => {};
+        try {
+          await cacheDataLoaded;
+          const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
+          unsubscribe = onSnapshot(q, (snapshot) => {
+            updateCachedData((draft) => {
+              const newMessages = snapshot.docs.map(serializeData) as Message[];
+              return newMessages;
+            });
+          });
+        } catch {}
+        await cacheEntryRemoved;
+        unsubscribe();
       },
       providesTags: ["Messages"],
     }),
@@ -284,31 +315,31 @@ export const apiSlice = createApi({
       invalidatesTags: ["Messages"],
     }),
 
-    // Leads
     getLeads: builder.query<any[], void>({
       async queryFn() {
         try {
           const leadsQuery = query(collection(db, "leads"), orderBy("createdAt", "desc"));
           const querySnapshot = await getDocs(leadsQuery);
-          const leads = querySnapshot.docs.map(doc => {
-            const data = serializeData(doc);
-            // Format dates/times for consistency with messages UI
-            const created = new Date(data.createdAt);
-            return {
-              ...data,
-              date: created.toLocaleDateString(),
-              time: created.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-              // Map to message-like fields for UI compatibility
-              subject: `${data.serviceType} Consultation`,
-              message: data.projectDetails || "",
-              priority: data.budget ? (data.budget.includes("50M") ? "High" : "Medium") : "Low",
-              status: data.status || "New"
-            };
-          });
+          const leads = querySnapshot.docs.map(formatLead);
           return { data: leads };
         } catch (error: any) {
           return { error: error.message };
         }
+      },
+      async onCacheEntryAdded(arg, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) {
+        let unsubscribe = () => {};
+        try {
+          await cacheDataLoaded;
+          const q = query(collection(db, "leads"), orderBy("createdAt", "desc"));
+          unsubscribe = onSnapshot(q, (snapshot) => {
+            updateCachedData((draft) => {
+              const newLeads = snapshot.docs.map(formatLead);
+              return newLeads;
+            });
+          });
+        } catch {}
+        await cacheEntryRemoved;
+        unsubscribe();
       },
       providesTags: ["Leads"],
     }),
@@ -380,6 +411,25 @@ export const apiSlice = createApi({
           return { error: error.message };
         }
       },
+      async onCacheEntryAdded(clientId, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) {
+        let unsubscribe = () => {};
+        try {
+          await cacheDataLoaded;
+          const q = query(
+            collection(db, "tickets"),
+            where("clientId", "==", clientId),
+            orderBy("createdAt", "desc")
+          );
+          unsubscribe = onSnapshot(q, (snapshot) => {
+            updateCachedData((draft) => {
+              const newTickets = snapshot.docs.map(serializeData) as Ticket[];
+              return newTickets;
+            });
+          });
+        } catch {}
+        await cacheEntryRemoved;
+        unsubscribe();
+      },
       providesTags: ["Tickets"]
     }),
     addSupportTicket: builder.mutation<void, Partial<Ticket>>({
@@ -397,6 +447,107 @@ export const apiSlice = createApi({
         }
       },
       invalidatesTags: ["Tickets"]
+    }),
+    getAllSupportTickets: builder.query<Ticket[], void>({
+      async queryFn() {
+        try {
+          const ticketsQuery = query(collection(db, "tickets"), orderBy("createdAt", "desc"));
+          const querySnapshot = await getDocs(ticketsQuery);
+          const tickets = querySnapshot.docs.map(serializeData) as Ticket[];
+          return { data: tickets };
+        } catch (error: any) {
+          return { error: error.message };
+        }
+      },
+      async onCacheEntryAdded(arg, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) {
+        let unsubscribe = () => {};
+        try {
+          await cacheDataLoaded;
+          const q = query(collection(db, "tickets"), orderBy("createdAt", "desc"));
+          unsubscribe = onSnapshot(q, (snapshot) => {
+            updateCachedData((draft) => {
+              const newTickets = snapshot.docs.map(serializeData) as Ticket[];
+              return newTickets;
+            });
+          });
+        } catch {}
+        await cacheEntryRemoved;
+        unsubscribe();
+      },
+      providesTags: ["Tickets"]
+    }),
+    updateSupportTicket: builder.mutation<void, { id: string; [key: string]: any }>({
+      async queryFn({ id, ...updates }) {
+        try {
+          const docRef = doc(db, "tickets", id);
+          await updateDoc(docRef, {
+            ...updates,
+            updatedAt: serverTimestamp()
+          });
+          return { data: undefined };
+        } catch (error: any) {
+          return { error: error.message };
+        }
+      },
+      invalidatesTags: ["Tickets"]
+    }),
+    
+    // Page Views / Analytics
+    getPageViews: builder.query<any[], void>({
+      async queryFn() {
+        try {
+          const pageViewsQuery = query(collection(db, "page_views"), orderBy("createdAt", "desc"));
+          const querySnapshot = await getDocs(pageViewsQuery);
+          const pageViews = querySnapshot.docs.map(serializeData);
+          return { data: pageViews };
+        } catch (error: any) {
+          return { error: error.message };
+        }
+      },
+      async onCacheEntryAdded(arg, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) {
+        let unsubscribe = () => {};
+        try {
+          await cacheDataLoaded;
+          const q = query(collection(db, "page_views"), orderBy("createdAt", "desc"));
+          unsubscribe = onSnapshot(q, (snapshot) => {
+            updateCachedData((draft) => {
+              const newPageViews = snapshot.docs.map(serializeData);
+              return newPageViews;
+            });
+          });
+        } catch {}
+        await cacheEntryRemoved;
+        unsubscribe();
+      },
+      providesTags: ["PageViews"],
+    }),
+    getAuditLogs: builder.query<any[], void>({
+      async queryFn() {
+        try {
+          const auditLogsQuery = query(collection(db, "audit_logs"), orderBy("createdAt", "desc"));
+          const querySnapshot = await getDocs(auditLogsQuery);
+          const logs = querySnapshot.docs.map(serializeData);
+          return { data: logs };
+        } catch (error: any) {
+          return { error: error.message };
+        }
+      },
+      async onCacheEntryAdded(arg, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) {
+        let unsubscribe = () => {};
+        try {
+          await cacheDataLoaded;
+          const q = query(collection(db, "audit_logs"), orderBy("createdAt", "desc"));
+          unsubscribe = onSnapshot(q, (snapshot) => {
+            updateCachedData((draft) => {
+              const newLogs = snapshot.docs.map(serializeData);
+              return newLogs;
+            });
+          });
+        } catch {}
+        await cacheEntryRemoved;
+        unsubscribe();
+      },
+      providesTags: ["AuditLogs"],
     }),
   }),
 });
@@ -421,5 +572,9 @@ export const {
   useGetUsersQuery,
   useUpdateUserRoleMutation,
   useGetSupportTicketsQuery,
-  useAddSupportTicketMutation
+  useAddSupportTicketMutation,
+  useGetPageViewsQuery,
+  useGetAllSupportTicketsQuery,
+  useUpdateSupportTicketMutation,
+  useGetAuditLogsQuery
 } = apiSlice;

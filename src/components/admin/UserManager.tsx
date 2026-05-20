@@ -4,15 +4,28 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Shield, User, Mail, ShieldCheck, UserPlus } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
+import { logAdminAction } from "@/services/audit";
 
 export function UserManager() {
+  const { user } = useAuth();
   const { data: users, isLoading } = useGetUsersQuery();
   const [updateRole, { isLoading: isUpdating }] = useUpdateUserRoleMutation();
 
   const handleRoleChange = async (userId: string, newRole: string) => {
+    const targetUser = users?.find(u => u.id === userId);
     try {
       await updateRole({ id: userId, role: newRole }).unwrap();
       toast.success(`User role updated to ${newRole}`);
+      if (user && targetUser) {
+        logAdminAction({
+          adminEmail: user.email || "Admin",
+          adminId: user.uid,
+          actionType: "UPDATE_USER_ROLE",
+          targetResource: `User: ${targetUser.email || userId}`,
+          details: `Updated role from ${targetUser.role || 'none'} to ${newRole}`
+        });
+      }
     } catch (error) {
       toast.error("Failed to update role");
     }

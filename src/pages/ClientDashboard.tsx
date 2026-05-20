@@ -24,7 +24,7 @@ export default function ClientDashboard() {
 
   return (
     <div className="space-y-8 animate-slide-up">
-      <SEO title="Client Dashboard" />
+      <SEO title="Client Dashboard" description={""} />
       
       {/* Welcome Section */}
       <div className="relative glass-card p-12 rounded-[2.5rem] border-white/5 overflow-hidden">

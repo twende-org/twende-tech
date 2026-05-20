@@ -21,18 +21,39 @@ const Portfolio = () => {
   }
 
   const otherProjects = firestoreProjects?.filter(
-    fp => !initialProjects.some(ip => ip.title === fp.title)
+    fp => !initialProjects.some(ip => {
+      const normIpTitle = (ip.title || "").trim().toLowerCase();
+      const normFpTitle = (fp.title || "").trim().toLowerCase();
+      const normIpId = (ip.id || "").trim().toLowerCase();
+      const normFpId = (fp.id || "").trim().toLowerCase();
+      return normIpTitle === normFpTitle || normIpId === normFpId;
+    })
   ) || [];
   
   const allProjects = [...initialProjects, ...otherProjects] as Project[];
 
+  // Deduplicate allProjects to guarantee absolutely no redundant items by title or ID
+  const uniqueProjects: Project[] = [];
+  const seenKeys = new Set<string>();
+
+  for (const p of allProjects) {
+    const normTitle = (p.title || "").trim().toLowerCase();
+    const normId = (p.id || "").trim().toLowerCase();
+    
+    if (!seenKeys.has(normTitle) && !seenKeys.has(normId)) {
+      uniqueProjects.push(p);
+      seenKeys.add(normTitle);
+      seenKeys.add(normId);
+    }
+  }
+
   const filteredProjects = activeTab === "All" 
-    ? allProjects 
-    : allProjects.filter(p => p.category === activeTab);
+    ? uniqueProjects 
+    : uniqueProjects.filter(p => p.category === activeTab);
 
   return (
     <div className="relative">
-      <section className="py-32 px-4 relative overflow-hidden bg-gradient-to-b from-background to-accent/5">
+      <section className="pt-36 sm:pt-40 md:pt-48 pb-32 px-4 relative overflow-hidden bg-gradient-to-b from-background to-accent/5">
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-16 animate-slide-up">
@@ -45,12 +66,12 @@ const Portfolio = () => {
           </div>
 
           {/* Category Filter */}
-          <div className="flex flex-wrap justify-center gap-3 mb-16 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+          <div className="flex overflow-x-auto sm:flex-wrap sm:justify-center gap-3 mb-16 pb-4 sm:pb-0 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0 animate-slide-up" style={{ animationDelay: '0.1s' }}>
             {categories.map((cat) => (
               <Button
                 key={cat}
                 variant={activeTab === cat ? "hero" : "outline"}
-                className={`rounded-full px-8 ${activeTab === cat ? "shadow-lg shadow-primary/20" : "border-white/10"}`}
+                className={`rounded-full px-6 shrink-0 ${activeTab === cat ? "shadow-lg shadow-primary/20" : "border-white/10"}`}
                 onClick={() => setActiveTab(cat)}
               >
                 {cat}

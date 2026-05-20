@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import dukaImage from "@/assets/products/twendeduka.png";
 import docsImage from "@/assets/products/twendedocs.png";
+import pharmacyImage from "@/assets/products/twendepharmacy.png";
 
 const products = [
   {
@@ -81,6 +82,42 @@ const products = [
         isPopular: true
       }
     ]
+  },
+  {
+    id: "pharmacy",
+    name: "Twende Pharmacy",
+    category: "Healthcare",
+    price: "49,000 TZS/mo",
+    rating: 5.0,
+    reviews: 45,
+    image: pharmacyImage,
+    downloadUrl: "/downloads/Twende_Pharmacy_Setup.zip",
+    features: [
+      "Bilingual UI (English & Swahili)",
+      "Real-time Firebase Cloud Sync",
+      "Automated Expiry Alerts & Monitoring",
+      "Offline Grace Period & Secure Bypass Key",
+      "B2B Admin Dashboard Analytics"
+    ],
+    isPopular: true,
+    pricingPlans: [
+      {
+        name: "Standard License",
+        price: "49,000 TZS/mo",
+        features: ["1 Terminal Registration", "Real-time Firebase Cloud Backups", "Offline Bypass Key", "Standard Expiry Tracking"]
+      },
+      {
+        name: "Professional (Multi-Branch)",
+        price: "89,000 TZS/mo",
+        features: ["3 Terminals Registration", "Multi-Branch Reporting", "Premium Expiry Lifecycle Analytics", "Priority Support"],
+        isPopular: true
+      },
+      {
+        name: "Enterprise SaaS",
+        price: "149,000 TZS/mo",
+        features: ["Unlimited Terminals", "Full Database Customization", "24/7 Dedicated Account Manager", "White-label Branding Options"]
+      }
+    ]
   }
 ];
 
@@ -93,7 +130,7 @@ const SoftwareProducts = () => {
     : products.filter(p => p.category === activeCategory);
 
   return (
-    <section className="py-32 px-4">
+    <section className="pt-36 sm:pt-40 md:pt-48 pb-32 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <div className="text-center mb-8 md:mb-16 animate-slide-up">

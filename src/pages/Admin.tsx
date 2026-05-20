@@ -5,6 +5,16 @@ import { Loader2 } from "lucide-react";
 export default function Admin() {
   const { role, logout, loading } = useAuth();
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+      // Instantly redirect to login and clear local state
+      window.location.href = "/login";
+    } catch (error) {
+      window.location.href = "/login";
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -19,5 +29,5 @@ export default function Admin() {
     return null;
   }
 
-  return <AdminDashboard onLogout={logout} />;
+  return <AdminDashboard onLogout={handleLogout} />;
 }

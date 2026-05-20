@@ -23,6 +23,8 @@ import {
 import { useGetMessagesQuery, useUpdateMessageMutation, useDeleteMessageMutation } from "@/store/apiSlice";
 import { sendLeadResponse } from "@/services/email";
 import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
+import { logAdminAction } from "@/services/audit";
 
 const ResponseModal = ({ 
   isOpen, 
@@ -101,6 +103,7 @@ const ResponseModal = ({
 };
 
 export function ContactMessages() {
+  const { user } = useAuth();
   const { data: messages, isLoading } = useGetMessagesQuery();
   const [updateMessage] = useUpdateMessageMutation();
   const [deleteMessage] = useDeleteMessageMutation();
@@ -109,20 +112,40 @@ export function ContactMessages() {
   const [isResponseModalOpen, setIsResponseModalOpen] = useState(false);
 
   const handleStatusUpdate = async (id: string, status: string) => {
+    const targetMsg = messages?.find(m => m.id === id);
     try {
       await updateMessage({ id, status }).unwrap();
       toast.success(`Message marked as ${status}`);
+      if (user && targetMsg) {
+        logAdminAction({
+          adminEmail: user.email || "Admin",
+          adminId: user.uid,
+          actionType: "UPDATE_SUPPORT_TICKET",
+          targetResource: `Inquiry: ${targetMsg.subject}`,
+          details: `Marked message status as ${status}`
+        });
+      }
     } catch (error) {
       toast.error("Status update failed");
     }
   };
 
   const handleDelete = async (id: string) => {
+    const targetMsg = messages?.find(m => m.id === id);
     if (window.confirm("Are you sure you want to delete this message?")) {
       try {
         await deleteMessage(id).unwrap();
         toast.success("Message deleted");
         setSelectedMessage(null);
+        if (user && targetMsg) {
+          logAdminAction({
+            adminEmail: user.email || "Admin",
+            adminId: user.uid,
+            actionType: "DELETE_MESSAGE",
+            targetResource: `Inquiry: ${targetMsg.subject}`,
+            details: `Deleted general inquiry from ${targetMsg.email}`
+          });
+        }
       } catch (error) {
         toast.error("Delete failed");
       }

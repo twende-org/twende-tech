@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useGetSupportTicketsQuery, useAddSupportTicketMutation } from "@/store/apiSlice";
 import { useAuth } from "@/context/AuthContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,10 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, MessageSquare, Clock, CheckCircle2, AlertCircle, Plus, Send } from "lucide-react";
+import { Loader2, MessageSquare, Clock, CheckCircle2, AlertCircle, Plus, Send, ChevronDown, ChevronUp } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { sendAdminNotification } from "@/services/email";
+import { db } from "@/lib/firebase";
+import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
+import { submitTicketReply } from "@/services/ticketReplies";
 
 export function ClientSupport() {
   const { user } = useAuth();
@@ -24,6 +26,56 @@ export function ClientSupport() {
     priority: "Medium"
   });
 
+  const [expandedTicketId, setExpandedTicketId] = useState<string | null>(null);
+  const [replies, setReplies] = useState<any[]>([]);
+  const [newReplyText, setNewReplyText] = useState("");
+  const [isSendingReply, setIsSendingReply] = useState(false);
+
+  // Subscribe to replies in real-time when expanded
+  useEffect(() => {
+    if (!expandedTicketId) {
+      setReplies([]);
+      return;
+    }
+    const q = query(
+      collection(db, "tickets", expandedTicketId, "replies"),
+      orderBy("createdAt", "asc")
+    );
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const repliesList = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setReplies(repliesList);
+    });
+    return () => unsubscribe();
+  }, [expandedTicketId]);
+
+  const handleSendReply = async (e: React.FormEvent, ticketId: string) => {
+    e.preventDefault();
+    if (!newReplyText.trim() || !user) return;
+
+    setIsSendingReply(true);
+    try {
+      const res = await submitTicketReply(ticketId, {
+        senderId: user.uid,
+        senderEmail: user.email || "Client",
+        senderRole: "client",
+        text: newReplyText.trim()
+      });
+
+      if (res.success) {
+        setNewReplyText("");
+      } else {
+        toast.error("Failed to submit reply");
+      }
+    } catch {
+      toast.error("Failed to submit reply");
+    } finally {
+      setIsSendingReply(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -32,16 +84,7 @@ export function ClientSupport() {
         clientId: user?.uid
       }).unwrap();
 
-      // Notify Admin via Email
-      await sendAdminNotification({
-        name: user?.email?.split('@')[0] || "Client",
-        email: user?.email || "",
-        company: "Enterprise Client Portal",
-        projectType: `Support Ticket (${formData.priority})`,
-        message: `${formData.subject}\n\n${formData.description}`
-      });
-
-      toast.success("Support ticket created. Our engineers will review it shortly.");
+      toast.success("Support ticket created. Our engineers will review it shortly. ✅");
       setIsOpen(false);
       setFormData({ subject: "", description: "", priority: "Medium" });
     } catch (error) {
@@ -152,6 +195,17 @@ export function ClientSupport() {
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setExpandedTicketId(expandedTicketId === ticket.id ? null : ticket.id)}
+                      className="rounded-full h-9 px-4 text-xs font-bold gap-1 border-white/10 hover:bg-white/5"
+                    >
+                      {expandedTicketId === ticket.id ? (
+                        <>Close Details <ChevronUp className="w-3.5 h-3.5" /></>
+                      ) : (
+                        <>View Thread <ChevronDown className="w-3.5 h-3.5" /></>
+                      )}
+                    </Button>
                     <Badge className={`px-4 py-2 rounded-full font-black tracking-widest text-[10px] ${
                       ticket.status === 'Open' ? 'bg-blue-500/20 text-blue-500' : 
                       ticket.status === 'In Progress' ? 'bg-yellow-500/20 text-yellow-500' : 
@@ -162,6 +216,59 @@ export function ClientSupport() {
                     </Badge>
                   </div>
                 </div>
+
+                {expandedTicketId === ticket.id && (
+                  <div className="mt-8 pt-8 border-t border-white/10 space-y-6">
+                    <h4 className="text-sm font-bold uppercase tracking-widest text-primary">Discussion History</h4>
+                    
+                    <div className="space-y-4 max-h-60 overflow-y-auto pr-2 custom-scrollbar flex flex-col">
+                      {replies.map((reply) => (
+                        <div 
+                          key={reply.id} 
+                          className={`flex flex-col space-y-1 p-4 rounded-2xl text-sm max-w-[80%] ${
+                            reply.senderRole === "client" 
+                              ? "bg-white/5 border border-white/5 self-end" 
+                              : "bg-primary/10 border border-primary/10 self-start"
+                          }`}
+                        >
+                          <div className="flex justify-between items-center text-[10px] uppercase tracking-wider font-bold text-muted-foreground gap-8">
+                            <span>{reply.senderRole === "client" ? "You" : "Twende Support"}</span>
+                            <span>{reply.createdAt?.seconds ? new Date(reply.createdAt.seconds * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Just now"}</span>
+                          </div>
+                          <p className="text-white mt-1 leading-relaxed">{reply.text}</p>
+                        </div>
+                      ))}
+                      {replies.length === 0 && (
+                        <div className="text-center py-6 text-xs text-muted-foreground">
+                          No replies yet. Our engineering team has been notified.
+                        </div>
+                      )}
+                    </div>
+
+                    {ticket.status !== "Completed" ? (
+                      <form onSubmit={(e) => handleSendReply(e, ticket.id)} className="flex gap-3">
+                        <Input 
+                          value={newReplyText}
+                          onChange={(e) => setNewReplyText(e.target.value)}
+                          placeholder="Type a message to our engineers..."
+                          className="bg-white/5 border-white/10 h-11 rounded-xl text-sm"
+                          disabled={isSendingReply}
+                        />
+                        <Button 
+                          type="submit" 
+                          disabled={!newReplyText.trim() || isSendingReply}
+                          className="h-11 px-5 rounded-xl bg-primary hover:scale-105 transition-transform"
+                        >
+                          {isSendingReply ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                        </Button>
+                      </form>
+                    ) : (
+                      <div className="text-center py-3 bg-green-500/10 border border-green-500/20 rounded-xl text-xs text-green-500 font-bold uppercase tracking-wider">
+                        This ticket has been resolved and closed
+                      </div>
+                    )}
+                  </div>
+                )}
               </CardContent>
             </Card>
           ))

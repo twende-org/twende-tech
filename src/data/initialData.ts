@@ -20,24 +20,6 @@ export const initialProjects: Project[] = [
     status: "Completed"
   },
   {
-    id: "twende-docs",
-    title: "Twende Docs Platform",
-    category: "Verified Marketplace",
-    image: "/assets/portfolio/twendedocs.png",
-    description: "A specialized e-document engine designed for the Tanzanian market, automating legal and professional document creation.",
-    challenge: "Professionals in Tanzania lacked accessible tools to generate legally sound documents quickly, often relying on expensive manual drafting.",
-    solution: "We built a high-availability web platform with integrated Azam Pesa payments and dynamic PDF generation optimized for local legal standards.",
-    tech: ["React", "Django", "PostgreSQL", "Azam Pesa"],
-    results: [
-      "90% Faster document generation",
-      "1,000+ Active users in Month 1",
-      "Seamless mobile payment integration"
-    ],
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    status: "Completed"
-  },
-  {
     id: "tulete-app",
     title: "Tulete Super-App",
     category: "Managed Tech Services",

@@ -13,6 +13,8 @@ import { LeadsManager } from "./LeadsManager";
 import { UserManager } from "./UserManager";
 import { AdminChat } from "./AdminChat";
 import { AnalyticsDashboard } from "./AnalyticsDashboard";
+import { SupportTicketsManager } from "./SupportTicketsManager";
+import { AuditLogsManager } from "./AuditLogsManager";
 
 interface AdminDashboardProps {
   onLogout: () => void;
@@ -36,6 +38,10 @@ export function AdminDashboard({ onLogout }: AdminDashboardProps) {
         return <ContactMessages />;
       case "leads":
         return <LeadsManager />;
+      case "tickets":
+        return <SupportTicketsManager />;
+      case "audit":
+        return <AuditLogsManager />;
       case "users":
         return <UserManager />;
       case "chats":

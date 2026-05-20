@@ -35,8 +35,12 @@ export function ClientLayout({ children }: ClientLayoutProps) {
   ];
 
   const handleLogout = async () => {
-    await logout();
-    navigate("/login");
+    try {
+      await logout();
+      window.location.href = "/login";
+    } catch {
+      window.location.href = "/login";
+    }
   };
 
   return (

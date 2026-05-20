@@ -26,6 +26,8 @@ import {
 import { useGetLeadsQuery, useUpdateLeadMutation, useDeleteLeadMutation } from "@/store/apiSlice";
 import { sendLeadResponse } from "@/services/email";
 import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
+import { logAdminAction } from "@/services/audit";
 
 const ResponseModal = ({ 
   isOpen, 
@@ -104,6 +106,7 @@ const ResponseModal = ({
 };
 
 export function LeadsManager() {
+  const { user } = useAuth();
   const { data: leads, isLoading } = useGetLeadsQuery();
   const [updateLead] = useUpdateLeadMutation();
   const [deleteLead] = useDeleteLeadMutation();
@@ -112,20 +115,40 @@ export function LeadsManager() {
   const [isResponseModalOpen, setIsResponseModalOpen] = useState(false);
 
   const handleStatusUpdate = async (id: string, status: string) => {
+    const targetLead = leads?.find(l => l.id === id);
     try {
       await updateLead({ id, status }).unwrap();
       toast.success(`Lead marked as ${status}`);
+      if (user && targetLead) {
+        logAdminAction({
+          adminEmail: user.email || "Admin",
+          adminId: user.uid,
+          actionType: "UPDATE_LEAD",
+          targetResource: `Lead: ${targetLead.company || targetLead.name}`,
+          details: `Marked lead status as ${status}`
+        });
+      }
     } catch (error) {
       toast.error("Status update failed");
     }
   };
 
   const handleDelete = async (id: string) => {
+    const targetLead = leads?.find(l => l.id === id);
     if (window.confirm("Are you sure you want to delete this lead?")) {
       try {
         await deleteLead(id).unwrap();
         toast.success("Lead deleted");
         setSelectedLead(null);
+        if (user && targetLead) {
+          logAdminAction({
+            adminEmail: user.email || "Admin",
+            adminId: user.uid,
+            actionType: "DELETE_LEAD",
+            targetResource: `Lead: ${targetLead.company || targetLead.name}`,
+            details: `Deleted business lead from ${targetLead.email}`
+          });
+        }
       } catch (error) {
         toast.error("Delete failed");
       }

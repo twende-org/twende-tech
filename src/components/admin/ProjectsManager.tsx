@@ -18,8 +18,11 @@ import {
 import { useGetProjectsQuery, useAddProjectMutation, useUpdateProjectMutation, useDeleteProjectMutation, Project, useGetUsersQuery } from "@/store/apiSlice";
 import { toast } from "sonner";
 import { uploadFile } from "@/lib/storage";
+import { useAuth } from "@/context/AuthContext";
+import { logAdminAction } from "@/services/audit";
 
 export function ProjectsManager() {
+  const { user } = useAuth();
   const [showForm, setShowForm] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -102,9 +105,27 @@ export function ProjectsManager() {
       if (editingProject) {
         await updateProject({ id: editingProject.id, ...projectData }).unwrap();
         toast.success("Project updated successfully");
+        if (user) {
+          logAdminAction({
+            adminEmail: user.email || "Admin",
+            adminId: user.uid,
+            actionType: "UPDATE_PROJECT",
+            targetResource: `Project: ${projectData.title}`,
+            details: `Updated project ID: ${editingProject.id}`
+          });
+        }
       } else {
         await addProject(projectData).unwrap();
         toast.success("Project added successfully");
+        if (user) {
+          logAdminAction({
+            adminEmail: user.email || "Admin",
+            adminId: user.uid,
+            actionType: "CREATE_PROJECT",
+            targetResource: `Project: ${projectData.title}`,
+            details: "Published new project case study"
+          });
+        }
       }
       resetForm();
       setImageFile(null);
@@ -114,10 +135,20 @@ export function ProjectsManager() {
   };
 
   const handleDelete = async (id: string) => {
+    const targetProject = projects?.find(p => p.id === id);
     if (window.confirm("Are you sure you want to delete this project?")) {
       try {
         await deleteProject(id).unwrap();
         toast.success("Project deleted");
+        if (user && targetProject) {
+          logAdminAction({
+            adminEmail: user.email || "Admin",
+            adminId: user.uid,
+            actionType: "DELETE_PROJECT",
+            targetResource: `Project: ${targetProject.title}`,
+            details: `Deleted project ID: ${id}`
+          });
+        }
       } catch (error) {
         toast.error("Delete failed");
       }

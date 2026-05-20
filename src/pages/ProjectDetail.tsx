@@ -39,7 +39,7 @@ const ProjectDetail = () => {
   if (!project) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-background">
-        <SEO title="Project Not Found" />
+        <SEO title="Project Not Found" description={""} />
         <h2 className="text-2xl font-bold mb-4 text-white">Project Not Found</h2>
         <Button onClick={() => navigate("/portfolio")}>Back to Portfolio</Button>
       </div>

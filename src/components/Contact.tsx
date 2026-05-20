@@ -3,8 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { submitLead } from "@/services/leads";
-import { sendAdminNotification } from "@/services/email";
+import { submitMessage } from "@/services/messages";
 import { toast } from "sonner";
 
 const Contact = () => {
@@ -33,28 +32,17 @@ const Contact = () => {
     setIsSubmitting(true);
     
     try {
-      // 1. Save to Firestore
-      const result = await submitLead({
+      // 1. Save to Firestore messages collection
+      const result = await submitMessage({
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
         company: formData.company,
-        serviceType: formData.projectType.includes("Innovation") ? "Innovation" : 
-                     formData.projectType.includes("Services") ? "Assurance" : 
-                     formData.projectType.includes("Marketplace") ? "Deployment" : "Other",
-        projectDetails: formData.message
+        projectType: formData.projectType || "General",
+        message: formData.message
       });
       
       if (result.success) {
-        // 2. Notify Admin via Email
-        await sendAdminNotification({
-          name: formData.name,
-          email: formData.email,
-          company: formData.company,
-          projectType: formData.projectType,
-          message: formData.message
-        });
-
         toast.success("Inquiry submitted successfully! Our team will contact you shortly. ✅");
         setFormData({
           name: "",

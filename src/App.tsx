@@ -21,6 +21,7 @@ import Admin from "./pages/Admin";
 
 import SoftwareProducts from "./pages/SoftwareProducts";
 import { Loader2 } from "lucide-react";
+import { AnalyticsTracker } from "./components/AnalyticsTracker";
 
 const ProtectedRoute = ({ 
   children, 
@@ -52,7 +53,8 @@ const ProtectedRoute = ({
 
 const App = () => (
   <HelmetProvider>
-    <SEO />
+    <SEO title={""} description={""} />
+    <AnalyticsTracker />
     <Routes>
       {/* Public Routes */}
       <Route path="/" element={<Layout><Index /></Layout>} />

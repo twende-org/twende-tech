@@ -1,0 +1,12 @@
+services:
+
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+    command: npm run dev -- --host 0.0.0.0

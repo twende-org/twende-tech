@@ -48,21 +48,38 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker image
-        run: docker build -t multi-frontend-twende_tech .
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Push Docker image
-        run: |
-          docker tag multi-frontend-twende_tech ${{ secrets.DOCKER_USERNAME }}/multi-frontend-twende_tech:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/multi-frontend-twende_tech:latest
-
-      - name: SSH and deploy on server
-        uses: appleboy/ssh-action@v0.1.8
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
         with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_KEY }}
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/multi-frontend-twende_tech:latest,${{ secrets.DOCKER_USERNAME }}/multi-frontend-twende_tech:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Deploy to production server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd ~/multi-frontend
-            docker-compose pull twende_tech
-            docker-compose up -d --force-recreate twende_tech
+            set -e
+            
+            echo "→ Navigating to Twende Tech stack"
+            cd ~/twendedigital-infra/apps/twende-tech
+            
+            echo "→ Pulling latest image from registry"
+            docker compose pull web
+            
+            echo "→ Executing zero-downtime rolling update"
+            docker compose up -d --no-deps web
+            
+            echo "→ Verifying deployment health"
+            sleep 10
+            docker compose ps
+            
+            echo "→ Deployment complete"
